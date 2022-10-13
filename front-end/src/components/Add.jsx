@@ -43,10 +43,11 @@ class Add extends React.Component {
             "Content-type": "application/json; charset=UTF-8",
           },
         })
-          
+          // go back to home page code here
           .then((response) => response.json())
           .then((data) => console.log(data));
 
+       
         this.setState({
           full_name: "",
           email: "",

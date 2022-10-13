@@ -1,9 +1,16 @@
 from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from. models import Employee
 from. serializers import EmployeeSerializer
+from django.http import JsonResponse
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+
 
 # Create your views here.
 
@@ -56,6 +63,35 @@ class deleteEmployee(APIView):
         employee = self.get_object(pk)
         employee.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+# aunthentication views start here
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        # ...
+
+        return token
+        
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['GET'])
+def userlogin(request):
+        routes = [
+            'login/token/',
+            'login/token/refresh/',
+        ]
+        return Response(routes)
+
+
+
         
 
         
