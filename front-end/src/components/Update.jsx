@@ -56,8 +56,8 @@ function Update(props) {
                 type="text"
                 className="form-control"
                 placeholder="Enter Age"
-                defaultValue={data.age}
-                // value={data.age}
+                // defaultValue={data.age}
+                value={data.age}
                 onChange={(e) => setAge(e.target.value)}
               />
             </div>
