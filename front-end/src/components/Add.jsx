@@ -17,6 +17,8 @@ class Add extends React.Component {
     this.submitForm = this.submitForm.bind(this);
   }
 
+  
+
   // Input Change Handler
   changeHandler(event) {
     this.setState({
@@ -67,13 +69,14 @@ class Add extends React.Component {
   }
 
   render() {
+    
     return (
       <>
         <h1 className="text-left text-danger">Register Employee</h1>
         <table className="table table-bordered">
           <tbody>
             <tr>
-              <th>Employee Full Name</th>
+              <th style={{ fontWeight: 'bolder' }}>Employee Full Name</th>
               <td>
                 <input
                   value={this.state.name}
@@ -85,7 +88,7 @@ class Add extends React.Component {
               </td>
             </tr>
             <tr>
-              <th>Employee Age</th>
+              <th style={{ fontWeight: 'bolder' }}>Employee Age</th>
               <td>
                 <input
                   value={this.state.age}
@@ -97,7 +100,7 @@ class Add extends React.Component {
               </td>
             </tr>
             <tr>
-              <th>Employee Email</th>
+              <th style={{ fontWeight: 'bolder' }}>Employee Email</th>
               <td>
                 <input
                   value={this.state.email}
@@ -109,7 +112,7 @@ class Add extends React.Component {
               </td>
             </tr>
             <tr>
-              <th>Employee Designation</th>
+              <th style={{ fontWeight: 'bolder' }}>Employee Designation</th>
               <td>
                 <input
                   value={this.state.designation}

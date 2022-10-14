@@ -10,8 +10,18 @@ import Swal from "sweetalert2";
 function List () {
     const [data, setData] = useState([]);
 
+    // check if user is logined in
+    const checkLogin = () => {
+        const token = localStorage.getItem("token");
+        if (token === null) {
+            window.location.href = "/login";
+        }
+    };
+
+
     // Fetch Data from django api
     useEffect(() => {
+      checkLogin( )
       Axios.get("http://127.0.0.1:8000/").then((response) =>
         setData(response.data)
       );
@@ -41,16 +51,16 @@ function List () {
 
     return(
         <>
-         <h1 className="text-left text-danger">Employee List</h1>
+         <h1 className="text-left text-danger">Approved Employee List</h1>
          <table className="table table-bordered ">
             <thead>
-                <tr>
-                    <th>Sl no</th>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Email</th>
-                    <th>Designation</th>
-                    <th>Actions</th>
+                <tr >
+                    <th style={{ fontWeight: 'bolder' }}>Sl no</th>
+                    <th style={{ fontWeight: 'bolder' }}>Name</th>
+                    <th style={{ fontWeight: 'bolder' }}>Age</th>
+                    <th style={{ fontWeight: 'bolder' }}>Email</th>
+                    <th style={{ fontWeight: 'bolder' }}>Designation</th>
+                    {/* <th style={{ fontWeight: 'bolder' }}>Actions</th> */}
                 </tr>
             </thead>
 
@@ -63,11 +73,11 @@ function List () {
                     <td>{item.age}</td>
                     <td>{item.email}</td>
                     <td>{item.designation}</td>
-                    <td >
+                    {/* <td >
                         <Link className='btn btn-dark mx-2' to={'../update/'+ item.id}>Update</Link>
-                        {/* delete emp button */}
+                       
                         <button className='btn btn-danger' onClick={() => deleteEmployee(item.id)}>Delete</button>
-                    </td>
+                    </td> */}
                 </tr>
                 
             </tbody>

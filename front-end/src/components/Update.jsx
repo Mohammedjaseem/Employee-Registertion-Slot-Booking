@@ -13,6 +13,8 @@ function Update (props) {
     const [age, setAge] = useState(data.age);
     const [email, setEmail] = useState(data.email);
     const [designation, setDesignation] = useState(data.designation);
+    const [is_approved, setIs_approved] = useState(data.is_approved);
+    const [is_rejected, setIs_rejected] = useState(data.is_rejected);
 
     const currentURL = window.location.href
     id = currentURL.split("/")[4]
@@ -30,7 +32,7 @@ function Update (props) {
     // Update Employee
     const updateEmployee = (id) => {
         console.log(name, age, email, designation)
-        if (name === undefined || age === undefined || email === undefined || designation === "") {
+        if (name === undefined || age === undefined || email === undefined || designation === undefined || is_approved === undefined || is_rejected === undefined) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -42,10 +44,12 @@ function Update (props) {
             name: name,
             age: age,
             email: email,
-            designation: designation
+            designation: designation,
+            is_approved: is_approved,
+            is_rejected: is_rejected
         });
         Swal.fire("Updated!", "", "success");
-        // window.location.reload();
+        window.location.href = "/list";
     }};
 
     return(
@@ -70,10 +74,34 @@ function Update (props) {
                             <label>Designation</label>
                             <input type="text" className="form-control" placeholder="Enter Designation" defaultValue={data.designation} onChange={(e) => setDesignation(e.target.value)} />
                         </div>
-                        <div className="mt-2">
-                        <button className="btn btn-primary" onClick={() => updateEmployee(data.id)}>Update</button>
-                        <Link className="btn btn-danger mx-2" to="/">Cancel</Link>
+                        {/* drop down to select true or flase for is active */}
+                        <div className="form-group">
+                            <label>Approve or pending Employee </label>
+                            <select className="form-control" style={{ maxWidth: 150}} defaultValue={data.is_approved} onChange={(e) => setIs_approved(e.target.value)}>
+                                <option value="" selected disabled hidden>Choose here ⬇️</option>
+                                <option value="true">Approve Employee</option>
+                                <option value="false">Peding Descion</option>
+                            </select>
                         </div>
+
+                        {/* Drop down to reject employee true or flase*/}
+                        <div className="form-group">
+                            <label>Reject Employee </label>
+                            <select className="form-control" style={{ maxWidth: 150}} defaultValue={data.is_rejected} onChange={(e) => setIs_rejected(e.target.value)}>
+                                <option value="" selected disabled hidden>Choose here ⬇️</option>
+                                <option value="true">Reject Employee</option>
+                                <option value="false">Dont Reject Employe</option>
+                            </select>
+                        </div>
+            
+                        
+                        <div className="form-group my-3">
+                            
+                        <button className="btn btn-primary" onClick={() => updateEmployee(id)}>Update</button>
+                        <Link to="/list" className="btn btn-danger">Cancel</Link>
+                        </div>
+                  
+                        
                     </div>
                 </div>
             </div>
