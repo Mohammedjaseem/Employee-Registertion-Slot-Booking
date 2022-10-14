@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 
 
@@ -18,8 +19,24 @@ function List () {
 
     // Delete Employee
     const deleteEmployee = (id) => {
-        Axios.delete("http://127.0.0.1:8000/employee/delete/"+id);
-        window.location.reload();
+        // swal pop up to confrm delete
+        Swal.fire({
+            title: "Are you sure ?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Axios.delete("http://127.0.0.1:8000/employee/delete/"+id);
+                window.location.reload();
+                Swal.fire("Deleted!", "", "success");
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire("Cancelled", "", "error");
+            }
+        });
     };
 
     return(
@@ -47,7 +64,7 @@ function List () {
                     <td>{item.email}</td>
                     <td>{item.designation}</td>
                     <td >
-                        <Link className='btn btn-dark mx-2' to={'update/'+ item.id}>Update</Link>
+                        <Link className='btn btn-dark mx-2' to={'../update/'+ item.id}>Update</Link>
                         {/* delete emp button */}
                         <button className='btn btn-danger' onClick={() => deleteEmployee(item.id)}>Delete</button>
                     </td>

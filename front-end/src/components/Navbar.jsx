@@ -8,11 +8,11 @@ function NavbarBootstrap() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className='rounded mb-3'>
       <Container >
-        <Navbar.Brand href="#home">Employee Data</Navbar.Brand>
+        <Link to='/' className='navbar-brand'>Emp App</Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link className='nav-link' to="/">Employees List </Link>
+            <Link className='nav-link' to="/list">Employees List </Link>
             <Link className='nav-link' to="/add"> Register Employee  </Link>
             {/* <Link className='nav-link' to="/update/2"> Update Data</Link> */}
           </Nav>
