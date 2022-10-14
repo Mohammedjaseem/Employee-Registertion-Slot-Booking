@@ -9,10 +9,10 @@ let id
 
 function Update (props) {
     const [data, setData] = useState([]);
-    const [name, setName] = useState("");
-    const [age, setAge] = useState("");
-    const [email, setEmail] = useState("");
-    const [designation, setDesignation] = useState("");
+    const [name, setName] = useState(data.name);
+    const [age, setAge] = useState(data.age);
+    const [email, setEmail] = useState(data.email);
+    const [designation, setDesignation] = useState(data.designation);
 
     const currentURL = window.location.href
     id = currentURL.split("/")[4]
@@ -29,6 +29,15 @@ function Update (props) {
 
     // Update Employee
     const updateEmployee = (id) => {
+        console.log(name, age, email, designation)
+        if (name === undefined || age === undefined || email === undefined || designation === "") {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "All fields are required!",
+            });
+        } 
+        else {
         Axios.put("http://127.0.0.1:8000/employee/"+id, {
             name: name,
             age: age,
@@ -36,8 +45,8 @@ function Update (props) {
             designation: designation
         });
         Swal.fire("Updated!", "", "success");
-        window.location.reload();
-    };
+        // window.location.reload();
+    }};
 
     return(
         <>
@@ -47,19 +56,19 @@ function Update (props) {
                     <div className="col-md-12">
                         <div className="form-group">
                             <label>Name</label>
-                            <input type="text" className="form-control" placeholder="Enter Name" value={data.name} onChange={(e) => setName(e.target.value)} />
+                            <input type="text" className="form-control" placeholder="Enter Name" defaultValue={data.name} onChange={(e) => setName(e.target.value)} />
                         </div>
                         <div className="form-group">
                             <label>Age</label>
-                            <input type="text" className="form-control" placeholder="Enter Age" value={data.age} onChange={(e) => setAge(e.target.value)} />
+                            <input type="text" className="form-control" placeholder="Enter Age" defaultValue={data.age} onChange={(e) => setAge(e.target.value)} />
                         </div>
                         <div className="form-group">
                             <label>Email</label>
-                            <input type="text" className="form-control" placeholder="Enter Email" value={data.email} onChange={(e) => setEmail(e.target.value)} />
+                            <input type="text" className="form-control" placeholder="Enter Email" defaultValue={data.email} onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="form-group">
                             <label>Designation</label>
-                            <input type="text" className="form-control" placeholder="Enter Designation" value={data.designation} onChange={(e) => setDesignation(e.target.value)} />
+                            <input type="text" className="form-control" placeholder="Enter Designation" defaultValue={data.designation} onChange={(e) => setDesignation(e.target.value)} />
                         </div>
                         <div className="mt-2">
                         <button className="btn btn-primary" onClick={() => updateEmployee(data.id)}>Update</button>
