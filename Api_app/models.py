@@ -73,5 +73,24 @@ class Account(AbstractBaseUser):
         return True
 
 
+# slot model
+
+class Slot(models.Model):
+    row_choices = (
+        ('A', 'A'),
+        ('B', 'B'),
+        ('C', 'C'),
+        ('D', 'D'),
+    )
+    slot_row = models.CharField(max_length=1, choices=row_choices)
+    slot_number = models.IntegerField()
+    is_booked = models.BooleanField(default=False)
+    booked_by = models.CharField(max_length=100, default="", blank=True)
+
+    
+    def __int__(self):
+        return self.slot_number
+
+
 
 

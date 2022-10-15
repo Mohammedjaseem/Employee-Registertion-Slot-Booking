@@ -49,6 +49,7 @@ function Update (props) {
             is_rejected: is_rejected
         });
         Swal.fire("Updated!", "", "success");
+        console.log()
         window.location.href = "/list";
     }};
 

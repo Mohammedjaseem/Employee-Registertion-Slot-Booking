@@ -16,6 +16,7 @@ import RegisterPage from './pages/RegisterPage';
 import AdminPage from './pages/AdminPage';
 import PendingList from './pages/PendingList';
 import RejctedList from './pages/RejctedList';
+import SlotBooking from './pages/SlotBooking';
 
 
 
@@ -36,6 +37,7 @@ function App() {
         <Route path='/add' element={<Add />} />
         <Route path='/update/:id' element={<Update />} />
         <Route path='/AdminPage' element={<AdminPage />} />
+        <Route path='/SlotBooking' element={<SlotBooking />} />
         <Route path='*' element={<h1>404 Not Found</h1>} />
       </Routes>
     </div>

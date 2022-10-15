@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from. models import Employee
-from. serializers import EmployeeSerializer, UserRegisterSerializer
+from. models import Employee, Account, Slot
+from. serializers import EmployeeSerializer, UserRegisterSerializer, availableSlotsSerializer
 from django.http import JsonResponse
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -149,6 +149,48 @@ def rejectedList(request):
         employee = Employee.objects.filter(is_rejected=True)
         serializer = EmployeeSerializer(employee, many=True)
         return Response (serializer.data)
+
+#all slot list
+
+@api_view(['GET'])
+def allSlotList(request):
+    if request.method == 'GET':
+        slot = Slot.objects.all()
+        serializer = availableSlotsSerializer(slot, many=True)
+        return Response (serializer.data)
+
+# avilable slot 
+
+@api_view(['GET'])
+def availableSlot(request):
+    if request.method == 'GET':
+        slot = Slot.objects.filter(is_booked=False)
+        serializer = availableSlotsSerializer(slot, many=True)
+        return Response (serializer.data)
+
+
+# slot booking
+
+@api_view(['POST'])
+def slotBooking(request):
+    if request.method == 'POST':
+        email = request.data.get('email')
+        slot_row = request.data.get('slot_row')
+        slot_number = request.data.get('slot_number')
+        booked_by = request.data.get('booked_by')
+        if email and slot_row and slot_number and booked_by:
+            user = Employee.objects.filter(email=email).first()
+            if user:
+                slot = Slot.objects.filter(slot_row=slot_row, slot_number=slot_number).first()
+                if slot:
+                    if slot.is_booked == False:
+                        slot.is_booked = True
+                        slot.booked_by = booked_by
+                        slot.save()
+                        return Response({'success': 'Slot Booked'}, status=status.HTTP_200_OK)
+                    return Response({'error': 'Slot Not Available'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Slot Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'User Not Found'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee, Account
+from .models import Employee, Account, Slot
 
 # Register your models here.
 
@@ -16,5 +16,13 @@ class AccountAdmin(admin.ModelAdmin):
     search_fields = ('email', 'username')
 
 admin.site.register(Account, AccountAdmin)
+
+class SlotAdmin(admin.ModelAdmin):
+    list_display = ('slot_row', 'slot_number', 'is_booked', 'booked_by')
+    list_filter = ('slot_row', 'slot_number', 'is_booked', 'booked_by')
+    search_fields = ('slot_row', 'slot_number', 'is_booked', 'booked_by')
+
+admin.site.register(Slot, SlotAdmin)
+
 
 

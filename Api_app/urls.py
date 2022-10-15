@@ -18,6 +18,9 @@ urlpatterns = [
     path('employeeListAdmin/', views.employeeListAdmin),
     path('admin_approval/', views.admin_approval),
     path('rejectedList/', views.rejectedList),
+    path('availableSlots/', views.availableSlot),
+    path('slotBooking/', views.slotBooking),
+    path('allSlotList/', views.allSlotList),
 
         # path('login/', views.userlogin),
         # path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

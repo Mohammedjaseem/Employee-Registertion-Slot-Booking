@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Employee, Account
+from .models import Employee, Account, Slot
 
 class EmployeeSerializer(serializers.ModelSerializer):
 
@@ -9,8 +9,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-        
 
 # serialize custom user register 
 
@@ -29,5 +27,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
         )
         return user
+
+
+# serialize slot booking
+
+class SlotBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slot
+        fields = '__all__'
+
+class availableSlotsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slot
+        fields = '__all__'
+
+
 
 
