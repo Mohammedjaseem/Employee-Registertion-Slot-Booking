@@ -10,6 +10,19 @@ import Swal from "sweetalert2";
 function PendingList () {
     const [data, setData] = useState([]);
 
+    // check if user is logined in
+    const checkLogin = () => {
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+
+        console.log("this is token " + token);
+        console.log("this is user " + user);
+        if (token === null) {
+            window.location.href = "/admin";
+        }
+    };
+
+
     // Fetch Data from django api
     useEffect(() => {
         checkLogin( )
@@ -19,14 +32,7 @@ function PendingList () {
     }, []);
     
 
-    // check if user is logined in
-    const checkLogin = () => {
-        const token = localStorage.getItem("token");
-        if (token === null) {
-            window.location.href = "/login";
-        }
-    };
-
+    
 
     // Delete Employee
     const deleteEmployee = (id) => {

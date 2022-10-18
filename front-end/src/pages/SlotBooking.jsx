@@ -38,7 +38,18 @@ function SlotBooking() {
   const toggleModal = () => setModal(!modal);
   const toggleAlert = () => setAlert(!alert);
 
+     // check if user is logined in
+     const checkLogin = () => {
+      const token = localStorage.getItem("token");
+      const admin = localStorage.getItem("admin");
+      console.log(token);
+      if (token === null || admin === "false") {
+          window.location.href = "/admin";
+      }
+  };
+
   useEffect(() => {
+    checkLogin( )
     axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
       const slots = res.data;
       setSlots(slots);

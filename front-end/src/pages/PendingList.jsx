@@ -16,6 +16,20 @@ function PendingList () {
         if (token === null) {
             window.location.href = "/login";
         }
+        // check the token is valid or not
+        else {
+            Axios.post("http://127.0.0.1:8000/UserLogin/", {
+                token: token,
+            }).then((response) => {
+                if (response.data.message) {
+                    window.location.href = "/login";
+                }
+                else {
+                    console.log("token is valid");
+                }
+            });
+        }
+
     };
 
 

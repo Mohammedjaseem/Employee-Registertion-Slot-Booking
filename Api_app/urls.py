@@ -21,6 +21,8 @@ urlpatterns = [
     path('availableSlots/', views.availableSlot),
     path('slotBooking/', views.slotBooking),
     path('allSlotList/', views.allSlotList),
+    path('superuserlogin/', views.superuserlogin),
+    # path('verify_token/', views.TokenRefreshView.as_view(), name='token_obtain_pair'),
 
         # path('login/', views.userlogin),
         # path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

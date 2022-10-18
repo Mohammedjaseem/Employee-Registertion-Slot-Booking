@@ -9,9 +9,11 @@ from django.http import JsonResponse
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # login required decorator
 from django.contrib.auth.decorators import login_required
+import jwt
 
 
 
@@ -97,10 +99,19 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add custom claims
         token['username'] = user.username
-        return token
+        token['email'] = user.email
+        return(token)
+    
+    
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
+# class TokenRefreshView(TokenRefreshView):
+#     serializer_class = MyTokenObtainPairSerializer
+        
+
 
 # user login view
 @api_view(['POST'])
@@ -113,7 +124,27 @@ def userlogin(request):
             if user:
                 if user.check_password(password):
                     serializer = UserRegisterSerializer(user)
-                    return Response(serializer.data, status=status.HTTP_200_OK)
+                    return Response({'token': str(token.access_token),'user': str(user) }, status=status.HTTP_200_OK)
+                return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide both username and password'}, status=status.HTTP_400_BAD_REQUEST)
+
+# login as superuser
+@api_view(['POST'])
+def superuserlogin(request):
+    if request.method == 'POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        if username and password:
+            user = Account.objects.filter(username=username).first()
+            if user:
+                if user.check_password(password):
+                    if user.is_superuser:
+                        serializer = UserRegisterSerializer(user)
+                        token = MyTokenObtainPairSerializer.get_token(user)
+                        user = Account.objects.filter(username=username).first()
+                        return Response({'token': str(token.access_token),'user': str(user) }, status=status.HTTP_200_OK)
+                    return Response({'errormessage': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
                 return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'error': 'Please provide both username and password'}, status=status.HTTP_400_BAD_REQUEST)

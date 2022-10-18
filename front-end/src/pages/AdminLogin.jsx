@@ -1,19 +1,26 @@
-//  USer login page
-import React, { useState } from "react";
+// to login admin 
+
+import React from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-function LoginPage() {
-    const [email, setEmail] = useState("");
+function AdminLogin() {
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const login = () => {
-        Axios.post("http://127.0.0.1:8000/UserLogin/", {
-            email: email,
+        Axios.post("http://127.0.0.1:8000/superuserlogin/", {
+            username: username,
             password: password,
+        
+
         }).then((response) => {
-            console.log(response);
+
+            
+
+            //  if any AxiosError is there then it will show the message
             if (response.data.message) {
                 Swal.fire({
                     title: "Error",
@@ -21,6 +28,7 @@ function LoginPage() {
                     icon: "error",
                     confirmButtonText: "Ok",
                 });
+            
             } else {
                 Swal.fire({
                     title: "Success",
@@ -30,13 +38,15 @@ function LoginPage() {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // set a token in local storage
-                        localStorage.setItem("token", response.data.refresh);
-                        window.location.href = "/";
+                        localStorage.setItem("token", response.data.token);
+                        localStorage.setItem("admin", response.data.user);
+                        window.location.href = "/AdminPage";
                     }
+
                 });
             }
         });
-    };
+    }
 
     return (
         <div className="container">
@@ -44,17 +54,17 @@ function LoginPage() {
                 <div className="col-md-6 offset-md-3">
                     <div className="card mt-5">
                         <div className="card-header">
-                            <h3 className="text-center">User Login</h3>
+                            <h3 className="text-center">Admin Login</h3>
                         </div>
                         <div className="card-body">
                             <div className="form-group">
-                                <label>Email</label>
+                                <label>User Name</label>
                                 <input
-                                    type="email"
+                                    type="text"
                                     className="form-control"
-                                    placeholder="Enter Email"
+                                    placeholder="Enter User Name"
                                     onChange={(e) => {
-                                        setEmail(e.target.value);
+                                        setUsername(e.target.value);
                                     }
                                     }
                                 />
@@ -71,29 +81,27 @@ function LoginPage() {
                                     }
                                 />
                             </div>
-                            <br></br>
-                            <div className="form-group">
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={login}
-                                >
-                                    Login
-                                </button>
-                            </div>
+                            <button
+                                className="btn btn-primary btn-block"
+                                onClick={login}
+                            >
+                                Login
+                            </button>
+
                             <div className="form-group">
                                 <p><br></br>
-                                    <Link to="/register">Register New User</Link><br/>
-                                    <Link to="/admin">Admin Login</Link>
+                                    <Link to="/login">User Login</Link>
                                 </p>
 
                             </div>
+                            
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-
 }
 
-export default LoginPage;   
+export default AdminLogin;
+

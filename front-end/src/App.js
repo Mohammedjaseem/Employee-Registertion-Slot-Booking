@@ -17,6 +17,7 @@ import AdminPage from './pages/AdminPage';
 import PendingList from './pages/PendingList';
 import RejctedList from './pages/RejctedList';
 import SlotBooking from './pages/SlotBooking';
+import AdminLogin from './pages/AdminLogin';
 
 
 
@@ -30,6 +31,7 @@ function App() {
         {/* <Route path='/' element={<HomePage />} /> */}
         <Route path='/' element={<List />} />
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/admin' element={<AdminLogin />} />
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/list' element={<List />} />
         <Route path='/PendingList' element={<PendingList />} />
