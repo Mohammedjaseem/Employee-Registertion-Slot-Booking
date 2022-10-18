@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import React from 'react';
+import { useEffect, useState } from "react";
 
 
 function logout() {
@@ -14,6 +15,21 @@ function logout() {
 
 
 function NavbarBootstrap() {
+
+  const [data, setData] = useState([]);
+
+  // Fetch Data from django api
+  useEffect(() => {
+    Axios.get("http://127.0.0.1:8000/navbarCounter/").then((response) =>{
+      setData(response.data)
+      console.log(response.data)
+  }
+    )}
+, []);
+
+
+
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className='rounded mb-3'>
       <Container >
@@ -24,11 +40,12 @@ function NavbarBootstrap() {
         }
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Link className='nav-link' to="/list">Approved</Link>
-            <Link className='nav-link' to="/PendingList">Pending </Link>
-            <Link className='nav-link' to="/RejctedList">Rejected</Link>
-            <Link className='nav-link' to="/add"> Register Employee </Link>
+          <Nav className="me-auto">  
+          {/* data?.object  is optional chaing*/}
+            <Link className='nav-link' to="/list">Approved ( {data?.approved_users} )</Link>
+            <Link className='nav-link' to="/PendingList">Pending ( {data?.pending_users} )</Link>
+            <Link className='nav-link' to="/RejctedList">Rejected ( {data?.rejected_users} )</Link>
+            <Link className='nav-link' to="/add"> Register Employee  </Link>
            
             {/* check if logined user is admin */}
             {localStorage.getItem('admin') ? (

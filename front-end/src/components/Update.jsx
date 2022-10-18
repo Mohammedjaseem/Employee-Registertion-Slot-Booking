@@ -8,6 +8,14 @@ import Swal from "sweetalert2";
 let id 
 
 function Update (props) {
+    // Fetch Data from django api
+    useEffect(() => {
+        Axios.get("http://127.0.0.1:8000/employee/"+id).then((response) =>
+          setData(response.data)
+        );
+      }
+      , []);
+
     const [data, setData] = useState([]);
     const [name, setName] = useState(data.name);
     const [age, setAge] = useState(data.age);
@@ -19,20 +27,14 @@ function Update (props) {
     const currentURL = window.location.href
     id = currentURL.split("/")[4]
 
-    // Fetch Data from django api
-    useEffect(() => {
-      Axios.get("http://127.0.0.1:8000/employee/"+id).then((response) =>
-        setData(response.data)
-      );
-    }
-    , []);
+    
 
 
 
     // Update Employee
     const updateEmployee = (id) => {
         console.log(name, age, email, designation)
-        if (name === undefined || age === undefined || email === undefined || designation === undefined || is_approved === undefined || is_rejected === undefined) {
+        if (false) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -40,7 +42,7 @@ function Update (props) {
             });
         } 
         else {
-        Axios.put("http://127.0.0.1:8000/employee/"+id, {
+        Axios.patch("http://127.0.0.1:8000/employee/"+id, {
             name: name,
             age: age,
             email: email,
@@ -50,7 +52,7 @@ function Update (props) {
         });
         Swal.fire("Updated!", "", "success");
         console.log()
-        window.location.href = "/list";
+        // window.location.href = "/list";
     }};
 
     return(
@@ -94,12 +96,14 @@ function Update (props) {
                                 <option value="false">Dont Reject Employe</option>
                             </select>
                         </div>
+
+
             
                         
                         <div className="form-group my-3">
                             
                         <button className="btn btn-primary" onClick={() => updateEmployee(id)}>Update</button>
-                        <Link to="/list" className="btn btn-danger">Cancel</Link>
+                        <Link to="/AdminPage" className="btn btn-danger">Cancel</Link>
                         </div>
                   
                         

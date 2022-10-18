@@ -1,8 +1,7 @@
 // import avilable slots from the backend then display avilable slots in the form of bus seats
 // then when i click on the seat -> pop up a form which have a drop down to select the approved employee from the backend
 
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
 import { Container, Row, Col } from "reactstrap";
 import { Table } from "reactstrap";
@@ -13,12 +12,11 @@ import {
   DropdownItem,
 } from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Alert } from "reactstrap";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
-import Axios from "axios";
+
 
 // react function component display the avilable slots FROM API
 
@@ -36,7 +34,7 @@ function SlotBooking() {
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const toggleModal = () => setModal(!modal);
-  const toggleAlert = () => setAlert(!alert);
+
 
      // check if user is logined in
      const checkLogin = () => {
@@ -61,6 +59,44 @@ function SlotBooking() {
       console.log(approvedEmployees);
     });
   }, []);
+
+  // Slot clean up
+  const slotCleanUp = (id, row, number) => {
+    console.log(row);
+    console.log(number);
+    console.log(id);
+    Swal.fire({
+      title: "Are you sure ?",
+      text: "This Slot will become free!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(`http://127.0.0.1:8000/slotCleanUp/`, {
+          id: id,
+          slot_row: row,
+          slot_number: number,
+        });
+        console.log(id, row, number); 
+
+        // if ok then reload the page
+        Swal.fire("Deleted!", "Your Slot has been deleted.", "success"
+        ).then(() => {
+          window.location.reload();
+        }
+        );
+        
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire("Cancelled", "Your Slot is safe :)", "error");
+      }
+    });
+  };
+
+
+
 
   // Swal alert when booking down
 
@@ -122,12 +158,11 @@ function SlotBooking() {
             <Table>
               <thead>
                 <tr>
-                  <th>Slot ID</th>
-                  <th>slot Row</th>
-                  <th>slot Number</th>
-                  <th>slot Status</th>
-                  <th>Booked By</th>
-                  <th>Action</th>
+                  <th style={{fontSize: "15px", fontWeight: "bolder"}}>Slot ID</th>
+                  <th style={{fontSize: "15px", fontWeight: "bolder"}}>Slot </th>
+                  <th style={{fontSize: "15px", fontWeight: "bolder"}}>slot Status</th>
+                  <th style={{fontSize: "15px", fontWeight: "bolder"}}>Booked By</th>
+                  <th style={{fontSize: "15px", fontWeight: "bolder"}}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -135,20 +170,39 @@ function SlotBooking() {
                 {slots.map((slot) => (
                   <tr>
                     <th scope="row">{slot.id}</th>
-                    <td>{slot.slot_row}</td>
-                    <td>{slot.slot_number}</td>
+                    <td><span class="badge bg-info" style={{fontSize: "15px"}}>{slot.slot_row} {slot.slot_number}</span></td>
                     {/* if slot.is_booked show as booked in green wrap badge else available */}
                     <td>
                       {" "}
                       {slot.is_booked ? (
-                        <span class="badge bg-danger">Booked</span>
+                        <span class="badge bg-danger" style={{fontSize: "15px"}}>Booked</span>
                       ) : (
-                        <span class="badge bg-success">Available</span>
+                        <span class="badge bg-success" style={{fontSize: "15px"}}>Available</span>
                       )}
                     </td>
-                    <td>{slot.booked_by}</td>
+                    {/* show slot.booked_by else show not booked in green badge */}
                     <td>
-                      {/* if slot.is_booked the disable the button else enable */}
+                      {slot.booked_by ? (
+                        <span style={{fontSize: "15px"}}><b>{slot.booked_by}</b></span>
+                      ) : (
+                        <span style={{fontSize: "15px"}} class="badge bg-success">Not Booked</span>
+                      )}
+                    </td>
+
+
+                    <td>
+                      {/* if slot.is_booked then buttn for clen the slot */}
+                      {slot.is_booked ? (
+                        <Button
+                          color="info"
+                          onClick={() =>
+                            slotCleanUp(slot.id, slot.slot_row, slot.slot_number)
+                          }
+                        >
+                          Make slot free
+                        </Button>
+                      ) : (
+                        // else button for booking the slot
                       <Button
                         color="primary"
                         disabled={slot.is_booked}
@@ -158,10 +212,10 @@ function SlotBooking() {
                             setSlot_number(slot.slot_number);
                             toggleModal();
                         }}
-
                       >
-                        Book
+                        Book Slot 
                       </Button>
+                      )}
                     </td>
                   </tr>
                 ))}

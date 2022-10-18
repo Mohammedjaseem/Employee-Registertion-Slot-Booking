@@ -223,6 +223,44 @@ def slotBooking(request):
                 return Response({'error': 'Slot Not Found'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({'error': 'User Not Found'}, status=status.HTTP_400_BAD_REQUEST)
 
+# Slot bookings details
+@api_view(['GET'])
+def slotBookingDetails(request):
+    if request.method == 'GET':
+        slot = Slot.objects.filter(is_booked=True)
+        serializer = availableSlotsSerializer(slot, many=True)
+        return Response (serializer.data)
+
+# Slot delete
+@api_view(['POST'])
+def slotCleanUp(request):
+    if request.method == 'POST':
+        id = request.data.get('id')
+        slot_row = request.data.get('slot_row')
+        slot_number = request.data.get('slot_number')
+        if slot_row and slot_number and id:
+            slot = Slot.objects.filter(id=id, slot_row=slot_row, slot_number=slot_number).first()
+            if slot:
+                slot.is_booked = False
+                slot.booked_by = ""
+                slot.save()
+                return Response({'success': 'Slot Deleted'}, status=status.HTTP_200_OK)
+            return Response({'error': 'Slot Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide slot row and slot number'}, status=status.HTTP_400_BAD_REQUEST)
+
+# counter notifications
+@api_view(['GET'])
+def navbarCounter(request):
+    if request.method == 'GET':
+        # count of Approved users, Pending users, Rejected users
+        approved_users = Employee.objects.filter(is_approved=True).count()
+        pending_users = Employee.objects.filter(is_approved=False).count()
+        rejected_users = Employee.objects.filter(is_rejected=True).count()
+        # count of available slots, booked slots
+        available_slots = Slot.objects.filter(is_booked=False).count()
+        booked_slots = Slot.objects.filter(is_booked=True).count()
+        return Response({'approved_users': approved_users, 'pending_users': pending_users, 'rejected_users': rejected_users, 'available_slots': available_slots, 'booked_slots': booked_slots}, status=status.HTTP_200_OK)
+
 
 
         

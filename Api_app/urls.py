@@ -22,10 +22,9 @@ urlpatterns = [
     path('slotBooking/', views.slotBooking),
     path('allSlotList/', views.allSlotList),
     path('superuserlogin/', views.superuserlogin),
-    # path('verify_token/', views.TokenRefreshView.as_view(), name='token_obtain_pair'),
-
-        # path('login/', views.userlogin),
-        # path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-        # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('slotBookingDetails/', views.slotBookingDetails),
+    path('slotCleanUp/', views.slotCleanUp),
+    path('navbarCounter/', views.navbarCounter),
     
 ]
