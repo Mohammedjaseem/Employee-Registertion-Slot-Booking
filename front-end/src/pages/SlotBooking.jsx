@@ -16,6 +16,9 @@ import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
+
+
 
 
 // react function component display the avilable slots FROM API
@@ -26,6 +29,7 @@ function SlotBooking() {
   const [slot_row, setSlot_row] = useState("");
   const [slot_number, setSlot_number] = useState("");
   const [booked_by, setBooked_by] = useState("");
+  const navigate = useNavigate();
 
   const [modal, setModal] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -35,6 +39,12 @@ function SlotBooking() {
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const toggleModal = () => setModal(!modal);
 
+  // to close the modal when booking is done 
+  const closemodal = () => setModal(false);
+
+  // slot lock by user (not booked)
+  const [slotLock, setSlotLock] = useState("Select Emloyee");
+
 
      // check if user is logined in
      const checkLogin = () => {
@@ -42,23 +52,26 @@ function SlotBooking() {
       const admin = localStorage.getItem("admin");
       console.log(token);
       if (token === null || admin === "false") {
-          window.location.href = "/admin";
+          navigate("/admin");
       }
   };
 
   useEffect(() => {
     checkLogin( )
+    // fetch slots from the backend
     axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
       const slots = res.data;
       setSlots(slots);
       console.log(slots);
     });
+    // fetch approved approved employees from the backend
     axios.get(`http://127.0.0.1:8000`).then((res) => {
       const approvedEmployees = res.data;
       setApprovedEmployees(approvedEmployees);
       console.log(approvedEmployees);
     });
   }, []);
+
 
   // Slot clean up
   const slotCleanUp = (id, row, number) => {
@@ -80,12 +93,16 @@ function SlotBooking() {
           slot_row: row,
           slot_number: number,
         });
-        console.log(id, row, number); 
-
+      
         // if ok then reload the page
         Swal.fire("Deleted!", "Your Slot has been deleted.", "success"
         ).then(() => {
-          window.location.reload();
+          // refresh the slots by updateing the state
+          axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
+            const slots = res.data;
+            setSlots(slots);
+          });
+          navigate("/slotBooking");
         }
         );
         
@@ -95,11 +112,7 @@ function SlotBooking() {
     });
   };
 
-
-
-
-  // Swal alert when booking down
-
+  // Swal alert when booking 
   const bookingAlert = () => {
     Swal.fire({
       title: "You want to book this slot ?",
@@ -132,9 +145,18 @@ function SlotBooking() {
         });
 
         Swal.fire("Booked!", "", "success");
+        axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
+          const slots = res.data;
+          setSlots(slots); 
+        });
+        // autoclose the modal that opned by seting modal state flase
+        closemodal();
+        
+
         // refresh the page after 2 seconds
         setTimeout(function () {
-            window.location.reload();
+            // then navigate
+            navigate("/slotBooking");
             }, 2000);
     }
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -210,6 +232,7 @@ function SlotBooking() {
                         onClick={() => {
                             setSlot_row(slot.slot_row);
                             setSlot_number(slot.slot_number);
+                            
                             toggleModal();
                         }}
                       >
@@ -224,24 +247,34 @@ function SlotBooking() {
           </Col>
         </Row>
       </Container>
-      <Modal isOpen={modal} toggle={toggleModal}>
+      <Modal  isOpen={modal} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Book Slot</ModalHeader>
         <ModalBody>
           <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                 <DropdownToggle caret>
-                    Select Employee
+                    {slotLock} 
                 </DropdownToggle>
-                <DropdownMenu>
+
+                <DropdownMenu> 
                     {approvedEmployees.map((approvedEmployee) => (
                         
                         <DropdownItem onClick={
                             () => {
                                 setBooked_by(approvedEmployee.name);
                                 setEmail(approvedEmployee.email);
+                                setSlotLock(approvedEmployee.name);
                             }
                         }>
-                            {approvedEmployee.name}
-                        
+                            {/* list employee name  */}
+                            <span className="row">
+                            <img className="col-4" style={{borderRadius: '20%'}} src={'http://127.0.0.1:8000'+ approvedEmployee.profile_pic} height="50px" alt="dp not found"/>
+                            <div className="col-6">
+                            
+                              <b>{approvedEmployee.name} ( {approvedEmployee.age} )</b>
+                            <p style={{fontSize: "12px", fontStyle: "italic"}}><b>{approvedEmployee.designation}</b><br style={{fontSize: "12px", fontStyle: "normal"}}/>{approvedEmployee.email} </p>
+
+                            </div>
+                            </span>
                             </DropdownItem>
                     ))}
                 </DropdownMenu>

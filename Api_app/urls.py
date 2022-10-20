@@ -13,6 +13,8 @@ urlpatterns = [
     path('pending/' , views.pendingEmployeeList.as_view()),
     path('UserRegister/', views.UserRegisterView.as_view()),
     path('employee/<int:pk>' , views.employeeUpdate.as_view()),
+    path('cancelEmployee/' , views.cancelEmployee.as_view()),
+    path('approveEmployee/' , views.approveEmployee.as_view()),
     path('employee/delete/<int:pk>' , views.deleteEmployee.as_view()),
     path('UserLogin/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('employeeListAdmin/', views.employeeListAdmin),
@@ -27,4 +29,4 @@ urlpatterns = [
     path('slotCleanUp/', views.slotCleanUp),
     path('navbarCounter/', views.navbarCounter),
     
-]
+] 

@@ -34,7 +34,7 @@ function Update (props) {
     // Update Employee
     const updateEmployee = (id) => {
         console.log(name, age, email, designation)
-        if (false) {
+        if (name === undefined || age === undefined || email === undefined || designation === undefined || is_approved === undefined || is_rejected === undefined) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -42,7 +42,7 @@ function Update (props) {
             });
         } 
         else {
-        Axios.patch("http://127.0.0.1:8000/employee/"+id, {
+        Axios.put("http://127.0.0.1:8000/employee/"+id, {
             name: name,
             age: age,
             email: email,
@@ -53,6 +53,9 @@ function Update (props) {
         Swal.fire("Updated!", "", "success");
         console.log()
         // window.location.href = "/list";
+        // Link to = "/list"
+
+        
     }};
 
     return(

@@ -10,6 +10,7 @@ class Employee(models.Model):
     age = models.IntegerField()
     email = models.CharField(max_length=100)
     designation = models.CharField(max_length=100)
+    profile_pic = models.ImageField(upload_to='profile_pic', blank=True, null=True)
     is_approved = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
 
@@ -85,6 +86,7 @@ class Slot(models.Model):
     slot_row = models.CharField(max_length=1, choices=row_choices)
     slot_number = models.IntegerField()
     is_booked = models.BooleanField(default=False)
+    # booked_by on delete set null
     booked_by = models.CharField(max_length=100, default="", blank=True)
 
     

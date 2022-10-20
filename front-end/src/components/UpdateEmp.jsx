@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
+
+
 
 function Update (props) {
     const [data, setData] = useState([]);
@@ -11,6 +14,7 @@ function Update (props) {
     const [age, setAge] = useState("");
     const [email, setEmail] = useState("");
     const [designation, setDesignation] = useState("");
+    const navigate = useNavigate();
 
     // Fetch Data from django api
     useEffect(() => {
@@ -30,7 +34,7 @@ function Update (props) {
             designation: designation
         });
         Swal.fire("Updated!", "", "success");
-        window.location.reload();
+        navigate("/list");
     };
 
     return(

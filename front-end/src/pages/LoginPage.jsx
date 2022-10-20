@@ -3,10 +3,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
 
     const login = () => {
         Axios.post("http://127.0.0.1:8000/UserLogin/", {
@@ -31,11 +34,21 @@ function LoginPage() {
                     if (result.isConfirmed) {
                         // set a token in local storage
                         localStorage.setItem("token", response.data.refresh);
-                        window.location.href = "/";
+                        // navigate to homepage if user is logined
+                        navigate('/')
                     }
                 });
             }
+        })
+        .catch((error) => {
+        console.log('this is error',error);
+        Swal.fire({
+            title: "Error",
+            text: error.response.data.detail,
+            icon: "error",
+            confirmButtonText: "Ok",
         });
+    });
     };
 
     return (

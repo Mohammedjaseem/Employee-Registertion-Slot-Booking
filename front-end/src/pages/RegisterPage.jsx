@@ -1,6 +1,6 @@
 //  USer Registration Page
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import Swal from "sweetalert2";
 
@@ -8,6 +8,8 @@ function RegisterPage() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
     
     const register = () => {
         Axios.post("http://127.0.0.1:8000/UserRegister/", {
@@ -18,16 +20,27 @@ function RegisterPage() {
             console.log(response);
             Swal.fire({
                 title: "Success",
-                text: "You are registered successfully",
+                text: "Please update your Details",
                 icon: "success",
                 confirmButtonText: "Ok",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "/login";
+                    // navigate to add employee page after registration qith props of user email using navigate
+                    navigate('/add', {email})
                 }
+            });
+        }).catch((error) => {
+            console.log('this is error',error.response.data.email);
+            Swal.fire({
+                title: "Error",
+                text: error.response.data.email,
+                icon: "error",
+                confirmButtonText: "Ok",
             });
         });
     };
+
+
 
     return (
         <div className="container">

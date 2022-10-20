@@ -33,17 +33,36 @@ class employeeList(APIView):
         age = request.data.get('age')
         email = request.data.get('email')
         designation = request.data.get('designation')
-
-        employee = Employee(name=name, age=age, email=email, designation=designation)
+        profile_pic = request.data.get('profile_pic')
+        # save employee data in database
+        employee = Employee(name=name, age=age, email=email, designation=designation, profile_pic=profile_pic)
         employee.save()
 
+        return Response(status=status.HTTP_201_CREATED)
+
+# cancel employee which is approved 
+class cancelEmployee(APIView):
+    def post(self, request):
+        id = request.data.get('id')
+        employee = Employee.objects.get(id=id)
+        employee.is_approved = False
+        employee.save()
+        return Response(status=status.HTTP_201_CREATED)
+
+# approving a employee in pending list
+class approveEmployee(APIView):
+    def post(self, request):
+        id = request.data.get('id')
+        employee = Employee.objects.get(id=id)
+        employee.is_approved = True
+        employee.save()
         return Response(status=status.HTTP_201_CREATED)
 
 #pending employee list
 class pendingEmployeeList(APIView):
     def get(self, request):
         # send data as view which is_arrpoved = Flase
-        employee = Employee.objects.all() #change here for admin
+        employee = Employee.objects.filter(is_approved=False)
         serializer = EmployeeSerializer(employee, many=True)
         return Response (serializer.data)
 

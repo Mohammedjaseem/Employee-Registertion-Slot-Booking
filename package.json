@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cdbreact": "^1.5.3",
+    "react-bootstrap-sidebar-menu": "^2.0.3"
+  }
+}

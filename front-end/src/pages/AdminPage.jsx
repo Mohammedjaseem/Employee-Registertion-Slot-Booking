@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
 
 function PendingList() {
   const [data, setData] = useState([]);
   const [slotsbookedby, setSlotsbookedby] = useState([]);
+  const navigate = useNavigate();
 
   // check if user is logined in
   const checkLogin = () => {
@@ -23,7 +25,7 @@ function PendingList() {
   // Fetch Data from django api
   useEffect(() => {
     checkLogin();
-    Axios.get("http://127.0.0.1:8000/pending/").then((response) =>
+    Axios.get("http://127.0.0.1:8000/").then((response) =>
       setData(response.data)
     );
   }, []);
@@ -49,8 +51,13 @@ function PendingList() {
     }).then((result) => {
       if (result.isConfirmed) {
         Axios.delete("http://127.0.0.1:8000/employee/delete/" + id);
-        window.location.reload();
         Swal.fire("Deleted!", "", "success");
+        // update the page using state
+        setData(data.filter((item) => item.id !== id));
+
+        // native way to update the page
+        navigate("/AdminPage");
+
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire("Cancelled", "", "error");
       }

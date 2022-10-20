@@ -41,6 +41,17 @@ function PendingList () {
       );
     }, []);
 
+       //Giving approval for an employee
+       const approveEmployee = (id) => {
+        Axios.post("http://127.0.0.1:8000/approveEmployee/",{
+            id: id,
+        });
+        Swal.fire("Approved!", "", "success");
+        // update the page using state
+        setData(data.filter((item) => item.id !== id));
+    };
+
+
     // Delete Employee
     const deleteEmployee = (id) => {
         // swal pop up to confrm delete
@@ -55,7 +66,10 @@ function PendingList () {
         }).then((result) => {
             if (result.isConfirmed) {
                 Axios.delete("http://127.0.0.1:8000/employee/delete/"+id);
-                window.location.reload();
+
+                // if post request is successfull update setData
+                setData(data.filter((item) => item.id !== id));
+
                 Swal.fire("Deleted!", "", "success");
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 Swal.fire("Cancelled", "", "error");
@@ -74,6 +88,9 @@ function PendingList () {
                     <th style={{ fontWeight: 'bolder' }}>Age</th>
                     <th style={{ fontWeight: 'bolder' }}>Email</th>
                     <th style={{ fontWeight: 'bolder' }}>Designation</th>
+                    {localStorage.getItem("admin") ? (
+                        <th style={{ fontWeight: "bolder" }}>Action</th>
+                    ) : null}
                 </tr>
             </thead>
 
@@ -86,6 +103,23 @@ function PendingList () {
                     <td>{item.age}</td>
                     <td>{item.email}</td>
                     <td>{item.designation}</td>
+                    {localStorage.getItem("admin") ? (
+                    <td>
+                      <button
+                        className="btn btn-success mx-2"
+                        onClick={() => approveEmployee(item.id)}
+                      >
+                        Approval Employee
+                      </button>
+
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => deleteEmployee(item.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  ) : null} 
                  
                 </tr>
                 
@@ -96,4 +130,5 @@ function PendingList () {
 
     );
 }
+
 export default PendingList;

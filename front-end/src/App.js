@@ -18,6 +18,7 @@ import PendingList from './pages/PendingList';
 import RejctedList from './pages/RejctedList';
 import SlotBooking from './pages/SlotBooking';
 import AdminLogin from './pages/AdminLogin';
+import Sidebar from './pages/Sidebar';
 
 
 
@@ -25,11 +26,13 @@ function App() {
   return (
     <div className='container'>
       <NavbarBootstrap />
+      
       <Routes>
         {/* private route for home page */}
         {/* <PrivateRoute element={<HomePage />} /> */}
         {/* <Route path='/' element={<HomePage />} /> */}
-        <Route path='/' element={<List />} />
+        <Route path='/sidebar' element={<Sidebar />} />
+        <Route path='/' element={<HomePage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/admin' element={<AdminLogin />} />
         <Route path='/register' element={<RegisterPage />} />
