@@ -28,5 +28,15 @@ urlpatterns = [
     path('slotBookingDetails/', views.slotBookingDetails),
     path('slotCleanUp/', views.slotCleanUp),
     path('navbarCounter/', views.navbarCounter),
+    path('imgUpload/', views.imgUpload),
+    path('user/', views.User),
+    # is user had allready alloted a slot
+    path('isSlotAlloted/', views.isSlotAlloted),
+    # edit user profile
+    path('editEmployee/', views.editEmployee),
+    #recject employee
+    path('rejectEmployee/', views.rejectEmployee),
+    # get all employee list
+    path('allEmployeeList/', views.allEmployees),
     
 ] 

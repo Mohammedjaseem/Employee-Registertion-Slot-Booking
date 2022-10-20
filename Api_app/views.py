@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from. models import Employee, Account, Slot
-from. serializers import EmployeeSerializer, UserRegisterSerializer, availableSlotsSerializer
+from. models import Employee, Account, Slot, ImgUpload
+from. serializers import EmployeeSerializer, UserRegisterSerializer, availableSlotsSerializer, imgUploadSerializer
 from django.http import JsonResponse
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -33,6 +33,7 @@ class employeeList(APIView):
         age = request.data.get('age')
         email = request.data.get('email')
         designation = request.data.get('designation')
+        # request profile picture file from user and save it in database
         profile_pic = request.data.get('profile_pic')
         # save employee data in database
         employee = Employee(name=name, age=age, email=email, designation=designation, profile_pic=profile_pic)
@@ -62,9 +63,10 @@ class approveEmployee(APIView):
 class pendingEmployeeList(APIView):
     def get(self, request):
         # send data as view which is_arrpoved = Flase
-        employee = Employee.objects.filter(is_approved=False)
+        employee = Employee.objects.filter(is_approved=False, is_rejected=False)
         serializer = EmployeeSerializer(employee, many=True)
         return Response (serializer.data)
+        
 
 
 
@@ -129,6 +131,10 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 # class TokenRefreshView(TokenRefreshView):
 #     serializer_class = MyTokenObtainPairSerializer
+
+
+# token verify view
+
         
 
 
@@ -224,23 +230,26 @@ def availableSlot(request):
 @api_view(['POST'])
 def slotBooking(request):
     if request.method == 'POST':
-        email = request.data.get('email')
+        user_mail = request.data.get('user_mail')
         slot_row = request.data.get('slot_row')
         slot_number = request.data.get('slot_number')
         booked_by = request.data.get('booked_by')
-        if email and slot_row and slot_number and booked_by:
-            user = Employee.objects.filter(email=email).first()
+        if user_mail and slot_row and slot_number and booked_by:
+            user = Employee.objects.filter(email=user_mail).first()
             if user:
                 slot = Slot.objects.filter(slot_row=slot_row, slot_number=slot_number).first()
                 if slot:
                     if slot.is_booked == False:
                         slot.is_booked = True
                         slot.booked_by = booked_by
+                        slot.user_mail = user_mail
                         slot.save()
                         return Response({'success': 'Slot Booked'}, status=status.HTTP_200_OK)
                     return Response({'error': 'Slot Not Available'}, status=status.HTTP_400_BAD_REQUEST)
                 return Response({'error': 'Slot Not Found'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({'error': 'User Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide all details'}, status=status.HTTP_400_BAD_REQUEST)
+    
 
 # Slot bookings details
 @api_view(['GET'])
@@ -249,6 +258,8 @@ def slotBookingDetails(request):
         slot = Slot.objects.filter(is_booked=True)
         serializer = availableSlotsSerializer(slot, many=True)
         return Response (serializer.data)
+    else:
+        return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
 # Slot delete
 @api_view(['POST'])
@@ -272,13 +283,105 @@ def slotCleanUp(request):
 def navbarCounter(request):
     if request.method == 'GET':
         # count of Approved users, Pending users, Rejected users
-        approved_users = Employee.objects.filter(is_approved=True).count()
-        pending_users = Employee.objects.filter(is_approved=False).count()
+        approved_users = Employee.objects.filter(is_approved=True, is_rejected=False).count()
+        pending_users = Employee.objects.filter(is_approved=False, is_rejected=False ).count()
         rejected_users = Employee.objects.filter(is_rejected=True).count()
         # count of available slots, booked slots
         available_slots = Slot.objects.filter(is_booked=False).count()
         booked_slots = Slot.objects.filter(is_booked=True).count()
         return Response({'approved_users': approved_users, 'pending_users': pending_users, 'rejected_users': rejected_users, 'available_slots': available_slots, 'booked_slots': booked_slots}, status=status.HTTP_200_OK)
+
+# img upload
+@api_view(['POST'])
+def imgUpload(request):
+    if request.method == 'POST':
+        # save img to modal ImgUpload and return img url
+        img = request.data.get('img')
+        if img:
+            img = ImgUpload(img=img)
+            img.save()
+            return Response({'img_url': img.img.url}, status=status.HTTP_200_OK)
+        return Response({'error': 'Please provide image'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# fetch single user
+@api_view(['GET'])
+def User(request):
+    if request.method == 'GET':
+        # fetch single user with email in query params
+        email = request.query_params.get('email')
+        if email:
+            user = Employee.objects.filter(email=email).first()
+            slot = Slot.objects.filter(user_mail=email)
+            if user:
+                serializer = EmployeeSerializer(user, many=False)
+                return Response (serializer.data)
+            return Response({'error': 'User Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide email'}, status=status.HTTP_400_BAD_REQUEST)
+
+# check if a particular user is already booked a slot
+@api_view(['GET'])
+def isSlotAlloted(request):
+    if request.method == 'GET':
+        email = request.query_params.get('email')
+        if email:
+            slot = Slot.objects.filter(user_mail=email, is_booked=True).first()
+            if slot:
+                return Response({
+                    'slot_row' : slot.slot_row,
+                    'slot_number' : slot.slot_number,
+                    'booked': True
+                    }, status=status.HTTP_200_OK)
+            return Response({'booked': False}, status=status.HTTP_200_OK)
+        return Response({'error': 'Please provide email'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# edit or update employee details
+@api_view(['POST'])
+def editEmployee(request):
+    if request.method == 'POST':
+        email = request.data.get('email')
+        if email:
+            user = Employee.objects.filter(email=email).first()
+            if user:
+                serializer = EmployeeSerializer(user, data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({'success': 'User Updated'}, status=status.HTTP_200_OK)
+                return Response({'error': 'From data are not valid'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'User Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide email'}, status=status.HTTP_400_BAD_REQUEST)
+
+#reject employee
+@api_view(['POST'])
+def rejectEmployee(request):
+    if request.method == 'POST':
+        id = request.data.get('id')
+        if id:
+            user = Employee.objects.filter(id=id).first()
+            if user:
+                user.is_rejected = True
+                user.is_approved = False
+                user.save()
+                return Response({'success': 'User Rejected'}, status=status.HTTP_200_OK)
+            return Response({'error': 'User Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide email'}, status=status.HTTP_400_BAD_REQUEST)
+
+# all employees deatils
+@api_view(['GET'])
+def allEmployees(request):
+    if request.method == 'GET':
+        employees = Employee.objects.all()
+        serializer = EmployeeSerializer(employees, many=True)
+        return Response (serializer.data)
+    else:
+        return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+        
+
+
 
 
 

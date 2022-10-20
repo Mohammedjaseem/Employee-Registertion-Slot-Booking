@@ -8,8 +8,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employee
         fields = '__all__'
 
-
-
 # serialize custom user register 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -40,6 +38,15 @@ class availableSlotsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slot
         fields = '__all__'
+
+# for img upload
+
+class imgUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slot
+        fields = '__all__'
+
+
 
 
 

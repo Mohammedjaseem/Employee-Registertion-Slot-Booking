@@ -88,10 +88,19 @@ class Slot(models.Model):
     is_booked = models.BooleanField(default=False)
     # booked_by on delete set null
     booked_by = models.CharField(max_length=100, default="", blank=True)
+    user_mail = models.CharField(max_length=100, default="", blank=True)
 
     
     def __int__(self):
         return self.slot_number
+
+# img upload
+class ImgUpload(models.Model):
+    img = models.ImageField(upload_to='imgUpload')
+
+    def __str__(self):
+        return self.img.name
+    
 
 
 

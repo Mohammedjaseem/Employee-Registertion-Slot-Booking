@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee, Account, Slot
+from .models import Employee, Account, Slot, ImgUpload
 
 # Register your models here.
 
@@ -23,6 +23,13 @@ class SlotAdmin(admin.ModelAdmin):
     search_fields = ('slot_row', 'slot_number', 'is_booked', 'booked_by')
 
 admin.site.register(Slot, SlotAdmin)
+
+class ImgUploadAdmin(admin.ModelAdmin):
+    list_display = ('img', )
+    list_filter = ('img', )
+    search_fields = ('img', )
+
+admin.site.register(ImgUpload, ImgUploadAdmin)
 
 
 
