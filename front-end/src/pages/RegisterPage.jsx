@@ -17,7 +17,7 @@ function RegisterPage() {
             email: email,
             password: password,
         }).then((response) => {
-            console.log(response);
+            localStorage.setItem("reg_mail", email);
             Swal.fire({
                 title: "Success",
                 text: "Please update your Details",

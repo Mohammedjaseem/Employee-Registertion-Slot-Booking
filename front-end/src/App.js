@@ -19,6 +19,7 @@ import RejctedList from './pages/RejctedList';
 import SlotBooking from './pages/SlotBooking';
 import AdminLogin from './pages/AdminLogin';
 import Sidebar from './pages/Sidebar';
+import AddDp from './pages/dpAdd';
 
 
 
@@ -43,6 +44,7 @@ function App() {
         <Route path='/update/:id' element={<Update />} />
         <Route path='/AdminPage' element={<AdminPage />} />
         <Route path='/SlotBooking' element={<SlotBooking />} />
+        <Route path='/AddDp' element={<AddDp />} />
         <Route path='*' element={<h1>404 Not Found</h1>} />
       </Routes>
     </div>

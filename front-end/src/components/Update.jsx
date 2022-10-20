@@ -25,11 +25,7 @@ function Update (props) {
     const [is_rejected, setIs_rejected] = useState(data.is_rejected);
 
     const currentURL = window.location.href
-    id = currentURL.split("/")[4]
-
-    
-
-
+    id = currentURL
 
     // Update Employee
     const updateEmployee = (id) => {
@@ -60,7 +56,7 @@ function Update (props) {
 
     return(
         <>
-            <h1 className="text-left text-danger">Update Employee</h1>
+            <h1 className="text-center text-danger p-4">Update Employee</h1>
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">

@@ -17,6 +17,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
+import Update from "../components/Update";
 
 
 
@@ -25,10 +26,10 @@ import { useNavigate } from 'react-router-dom';
 
 function SlotBooking() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [email, setEmail] = useState("");
   const [slot_row, setSlot_row] = useState("");
   const [slot_number, setSlot_number] = useState("");
   const [booked_by, setBooked_by] = useState("");
+  const [user_mail, setUser_mail] = useState("");
   const navigate = useNavigate();
 
   const [modal, setModal] = useState(false);
@@ -112,7 +113,7 @@ function SlotBooking() {
     });
   };
 
-  // Swal alert when booking 
+  // Slot booking 
   const bookingAlert = () => {
     Swal.fire({
       title: "You want to book this slot ?",
@@ -135,22 +136,27 @@ function SlotBooking() {
         } else {
 
         // using put method to update the slot status
-        console.log(slot_row, slot_number, booked_by, email);
+        console.log(slot_row, slot_number, booked_by, user_mail);
         // put method to update the slot status
         axios.post("http://127.0.0.1:8000/slotBooking/", {
             slot_row: slot_row,
             slot_number: slot_number,
             booked_by: booked_by,
-            email: email,
+            user_mail: user_mail,
         });
 
         Swal.fire("Booked!", "", "success");
-        axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
-          const slots = res.data;
-          setSlots(slots); 
-        });
+
         // autoclose the modal that opned by seting modal state flase
         closemodal();
+        
+        // update the list of slots by updating the state from the backend
+        axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
+            const slots = res.data;
+            setSlots(slots);
+          });
+          navigate("/slotBooking");
+        
         
 
         // refresh the page after 2 seconds
@@ -261,7 +267,7 @@ function SlotBooking() {
                         <DropdownItem onClick={
                             () => {
                                 setBooked_by(approvedEmployee.name);
-                                setEmail(approvedEmployee.email);
+                                setUser_mail(approvedEmployee.email);
                                 setSlotLock(approvedEmployee.name);
                             }
                         }>

@@ -25,7 +25,7 @@ function PendingList() {
   // Fetch Data from django api
   useEffect(() => {
     checkLogin();
-    Axios.get("http://127.0.0.1:8000/").then((response) =>
+    Axios.get("http://127.0.0.1:8000/allEmployeeList/").then((response) =>
       setData(response.data)
     );
   }, []);
@@ -66,11 +66,12 @@ function PendingList() {
 
   return (
     <>
-      <h1 className="text-left text-danger">All Employes</h1>
+      <h1 className="text-center text-danger p-4">All Employes</h1>
       <table className="table table-bordered ">
         <thead>
           <tr>
             <th style={{ fontWeight: "bolder" }}>Sl no</th>
+            <th style={{ fontWeight: "bolder" }}>profile Picture</th>
             <th style={{ fontWeight: "bolder" }}>Name</th>
             <th style={{ fontWeight: "bolder" }}>Age</th>
             <th style={{ fontWeight: "bolder" }}>Email</th>
@@ -86,6 +87,9 @@ function PendingList() {
           <tbody key={item.id}>
             <tr>
               <td>{item.id}</td>
+              <td>
+                <img src={"http://127.0.0.1:8000"+item.profile_pic} height="50px" style={{borderRadius: '50%'}} alt="profile" width="50px" />
+              </td>
               <td>{item.name}</td>
               <td>{item.age}</td>
               <td>{item.email}</td>

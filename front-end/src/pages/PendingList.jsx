@@ -41,15 +41,29 @@ function PendingList () {
       );
     }, []);
 
-       //Giving approval for an employee
-       const approveEmployee = (id) => {
-        Axios.post("http://127.0.0.1:8000/approveEmployee/",{
+    //Giving approval for an employee
+    const approveEmployee = (id) => {
+     Axios.post("http://127.0.0.1:8000/approveEmployee/",{
+         id: id,
+     });
+     Swal.fire("Approved!", "", "success");
+     // update the page using state
+     setData(data.filter((item) => item.id !== id));
+    };
+
+    // Reject employee
+    const rejectEmployee = (id) => {
+        Axios.post("http://127.0.0.1:8000/rejectEmployee/",{
             id: id,
         });
-        Swal.fire("Approved!", "", "success");
+        Swal.fire("Rejected!", "", "success");
         // update the page using state
         setData(data.filter((item) => item.id !== id));
     };
+            
+
+
+    
 
 
     // Delete Employee
@@ -79,7 +93,7 @@ function PendingList () {
 
     return(
         <>
-         <h1 className="text-left text-danger">Pending Employee List</h1>
+         <h1 className="text-center text-danger p-4">Pending Employee List</h1>
          <table className="table table-bordered ">
             <thead>
                 <tr >
@@ -110,6 +124,12 @@ function PendingList () {
                         onClick={() => approveEmployee(item.id)}
                       >
                         Approval Employee
+                      </button>
+                      <button
+                        className="btn btn-info mx-2"
+                        onClick={() => rejectEmployee(item.id)}
+                      >
+                        Reject Employee
                       </button>
 
                       <button

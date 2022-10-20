@@ -42,7 +42,7 @@ function NavbarBootstrap() {
     <Navbar bg="dark" variant="dark" expand="lg" className='rounded mb-3'>
       <Container >
       {localStorage.getItem('admin') ? (
-        <Link to='/' className='navbar-brand'>Emp Admin</Link>
+        <a className='navbar-brand'>Emp Admin</a>
         ) : 
         <Link to='/' className='navbar-brand'>Emp App</Link>
         }

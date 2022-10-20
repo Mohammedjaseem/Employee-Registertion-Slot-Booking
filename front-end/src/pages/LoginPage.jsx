@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [email_for_fetch_details, setEmailForFeatchDetails] = useState("");
 
     const navigate = useNavigate();
 
@@ -34,7 +35,9 @@ function LoginPage() {
                     if (result.isConfirmed) {
                         // set a token in local storage
                         localStorage.setItem("token", response.data.refresh);
-                        // navigate to homepage if user is logined
+                        localStorage.setItem("email_for_fetch_details", email);
+                        // navigate to homepage if user is logined with user email as a parameter
+                        
                         navigate('/')
                     }
                 });
@@ -42,11 +45,16 @@ function LoginPage() {
         })
         .catch((error) => {
         console.log('this is error',error);
+        // if confirmButton is clicked then navigate to login page
         Swal.fire({
             title: "Error",
-            text: error.response.data.detail,
+            text: error,
             icon: "error",
             confirmButtonText: "Ok",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate('/login')
+            }
         });
     });
     };

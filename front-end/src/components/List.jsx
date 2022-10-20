@@ -35,8 +35,8 @@ function List() {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
+      confirmButtonText: "Yes, Cancel Approval!",
+      cancelButtonText: "No, Don't cancel!",
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
@@ -47,10 +47,10 @@ function List() {
         // if post request is successfull update setData
         setData(data.filter((item) => item.id !== id));
     
-        Swal.fire("Deleted!", "", "success");
+        Swal.fire("Approval Cancelled!", "", "success");
         navigate("/list");
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire("Cancelled", "", "error");
+        Swal.fire("No actions done", "", "error");
       }
     });
   };
@@ -80,7 +80,7 @@ function List() {
 
   return (
     <>
-      <h1 className="text-left text-danger">Approved Employee List</h1>
+      <h1 className="text-center text-danger p-4">Approved Employee List</h1>
       <table className="table table-bordered ">
         <thead>
           <tr>

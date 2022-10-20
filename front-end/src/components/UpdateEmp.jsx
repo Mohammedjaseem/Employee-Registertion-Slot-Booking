@@ -39,7 +39,7 @@ function Update (props) {
 
     return(
         <>
-            <h1 className="text-left text-danger">Update Employee</h1>
+            <h1 className="text-center text-danger p-4">Update Employee</h1>
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">
