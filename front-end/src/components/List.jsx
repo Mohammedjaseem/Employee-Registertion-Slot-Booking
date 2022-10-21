@@ -4,9 +4,14 @@ import Axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import Loderfun from "../components/Loader";
 
 function List() {
   const [data, setData] = useState([]);
+
+  // use state for loader 
+  const [loader, setLoader] = useState(false);
+
   const navigate = useNavigate();
 
   // check if user is logined in
@@ -20,9 +25,12 @@ function List() {
 
   // Fetch Data from django api
   useEffect(() => {
-    Axios.get("http://127.0.0.1:8000/").then((response) =>
+    setLoader(true);
+    Axios.get("https://emp-api.jassy.in/").then((response) =>
       setData(response.data)
-    );
+    ).then(() => {
+      setLoader(false);
+    });
   }, []);
 
 
@@ -40,7 +48,7 @@ function List() {
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        Axios.post("http://127.0.0.1:8000/cancelEmployee/", {
+        Axios.post("https://emp-api.jassy.in/cancelEmployee/", {
           id: id,
         });
 
@@ -69,7 +77,7 @@ function List() {
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        Axios.delete("http://127.0.0.1:8000/employee/delete/" + id);
+        Axios.delete("https://emp-api.jassy.in/employee/delete/" + id);
         window.location.reload();
         Swal.fire("Deleted!", "", "success");
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -81,6 +89,13 @@ function List() {
   return (
     <>
       <h1 className="text-center text-danger p-4">Approved Employee List</h1>
+
+      {/* loader here if Loder state is true*/}
+      {loader ? 
+      <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '50vh'}}>
+      <Loderfun />
+      </div> :
+      // if loader is false then show table
       <table className="table table-bordered ">
         <thead>
           <tr>
@@ -101,7 +116,7 @@ function List() {
 
         {data.map(
           (item) => (
-            (item.dp = "http://127.0.0.1:8000/" + item.profile_pic),
+            (item.dp = "https://emp-api.jassy.in/" + item.profile_pic),
             (
               <tbody key={item.id}>
                 <tr>
@@ -145,6 +160,7 @@ function List() {
           )
         )}
       </table>
+      }
     </>
   );
 }

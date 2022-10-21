@@ -21,7 +21,7 @@ function AddDp() {
         const formData = new FormData();
         formData.append("img", file);
         try {
-        const res = await Axios.post("http://127.0.0.1:8000/imgUpload/", formData, {
+        const res = await Axios.post("https://emp-api.jassy.in/imgUpload/", formData, {
             headers: {
             "Content-Type": "multipart/form-data",
             },

@@ -19,7 +19,7 @@ function Update (props) {
     // Fetch Data from django api
     useEffect(() => {
       const id = props.match.params.id;
-      Axios.get("http://127.0.0.1:8000/employee/"+id).then((response) =>
+      Axios.get("https://emp-api.jassy.in/employee/"+id).then((response) =>
         setData(response.data)
       );
     }
@@ -27,7 +27,7 @@ function Update (props) {
 
     // Update Employee
     const updateEmployee = (id) => {
-        Axios.put("http://127.0.0.1:8000/employee/"+id, {
+        Axios.put("https://emp-api.jassy.in/employee/"+id, {
             name: name,
             age: age,
             email: email,

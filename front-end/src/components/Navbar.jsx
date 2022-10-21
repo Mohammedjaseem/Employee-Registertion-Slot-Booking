@@ -28,7 +28,7 @@ function NavbarBootstrap() {
   useEffect(() => {
     localStorage.getItem('admin')
     localStorage.getItem('token')
-    Axios.get("http://127.0.0.1:8000/navbarCounter/").then((response) =>{
+    Axios.get("https://emp-api.jassy.in/navbarCounter/").then((response) =>{
       setData(response.data)
       console.log(response.data)
   }

@@ -34,14 +34,15 @@ export default function PersonalProfile() {
   // function to check if user is logged in basked on token in local storage token
   function checkLogin() {
     if (localStorage.getItem("token") === null) {
-      navigate('/login')
+      // navigate('/login') // this is work but shows the swal pop of profile not updated hence i used the below code
+      window.location.href = "/login";
     }
   }
 
   // check if the user has any allowed slot by checking the slot api
   function checkSlot() {
     const  email  = localStorage.getItem("email_for_fetch_details");
-    axios.get("http://127.0.0.1:8000/isSlotAlloted/", {
+    axios.get("https://emp-api.jassy.in/isSlotAlloted/", {
       params: {
         email: email
       }
@@ -54,8 +55,10 @@ export default function PersonalProfile() {
 
   // function to fetch user details
   function fetchUserDetails ()  {
+    // works only if user is logged in
+    checkLogin();
     const  email  = localStorage.getItem("email_for_fetch_details");
-    axios.get("http://127.0.0.1:8000/user/", {
+    axios.get("https://emp-api.jassy.in/user/", {
       params: {
         email: email
       }
@@ -130,7 +133,7 @@ export default function PersonalProfile() {
     formData.append("profile_pic", file);
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/editEmployee/", formData, {
+      const res = await axios.post("https://emp-api.jassy.in/editEmployee/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -141,8 +144,8 @@ export default function PersonalProfile() {
       setUploadedFile({ fileName, filePath });
 
       Swal.fire({
-        title: "Success",
-        text: "Employee Added Successfully",
+        title: "Profile Updated",
+        text: "Your Profile has been updated",
         icon: "success",
         confirmButtonText: "Ok",
       });
@@ -179,7 +182,7 @@ export default function PersonalProfile() {
                 <MDBCol md="4" className="gradient-custom text-center text-white"
                   style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
                     {/* display user image */}
-                  <MDBCardImage src={"http://127.0.0.1:8000/"+ user?.profile_pic}
+                  <MDBCardImage src={"https://emp-api.jassy.in/"+ user?.profile_pic}
                     alt="Avatar" className="my-5" style={{ width: '150px', height: '150px', borderRadius: '20%' }} fluid />
                     {/* map usr names  */}
               

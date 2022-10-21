@@ -5,32 +5,35 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
+
 
 
 function AdminLogin() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const navigate = useNavigate();
+
     const login = () => {
-        Axios.post("http://127.0.0.1:8000/superuserlogin/", {
+        Axios.post("https://emp-api.jassy.in/superuserlogin/", {
             username: username,
             password: password,
         
 
         }).then((response) => {
-
-            
-
             //  if any AxiosError is there then it will show the message
-            if (response.data.message) {
+            if (response.code) {
                 Swal.fire({
                     title: "Error",
-                    text: response.data.message,
+                    text: response.data.error,
                     icon: "error",
                     confirmButtonText: "Ok",
                 });
             
-            } else {
+            }
+            
+            else {
                 Swal.fire({
                     title: "Success",
                     text: "You are logged in successfully",
@@ -46,6 +49,20 @@ function AdminLogin() {
 
                 });
             }
+        })
+        .catch((error) => {
+            console.log('this is error',error);
+            // if confirmButton is clicked then navigate to login page
+            Swal.fire({
+                title: "Account not found",
+                text: error.response.data.error,
+                icon: "warning",
+                confirmButtonText: "Retry",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/admin')
+                }
+            });
         });
     }
 

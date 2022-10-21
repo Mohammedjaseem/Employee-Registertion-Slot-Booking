@@ -4,35 +4,46 @@ import Axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
+import Loderfun from "../components/Loader";
+
+
 
 function PendingList() {
   const [data, setData] = useState([]);
   const [slotsbookedby, setSlotsbookedby] = useState([]);
   const navigate = useNavigate();
 
+  // use state for loader 
+  const [loader, setLoader] = useState(false);
+
+  
+
   // check if user is logined in
   const checkLogin = () => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
-
-    console.log("this is token " + token);
-    console.log("this is user " + user);
     if (token === null) {
       window.location.href = "/admin";
     }
   };
 
-  // Fetch Data from django api
+  // Fetch Data from django api 
   useEffect(() => {
+    setLoader(true);
     checkLogin();
-    Axios.get("http://127.0.0.1:8000/allEmployeeList/").then((response) =>
+    Axios.get("https://emp-api.jassy.in/allEmployeeList/").then((response) =>
       setData(response.data)
-    );
+    ).then(() => {
+      setLoader(false);
+    });
+
+
+
   }, []);
 
   // fetch booked_by data from Slot api
   useEffect(() => {
-    Axios.get("http://127.0.0.1:8000/slotBookingDetails/").then((response) =>
+    Axios.get("https://emp-api.jassy.in/slotBookingDetails/").then((response) =>
       setSlotsbookedby(response.data)
     );
   }, []);
@@ -50,7 +61,7 @@ function PendingList() {
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        Axios.delete("http://127.0.0.1:8000/employee/delete/" + id);
+        Axios.delete("https://emp-api.jassy.in/employee/delete/" + id);
         Swal.fire("Deleted!", "", "success");
         // update the page using state
         setData(data.filter((item) => item.id !== id));
@@ -67,6 +78,11 @@ function PendingList() {
   return (
     <>
       <h1 className="text-center text-danger p-4">All Employes</h1>
+      {/* loader here if Loder state is true*/}
+      {loader ? 
+      <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '50vh'}}>
+      <Loderfun />
+      </div> : 
       <table className="table table-bordered ">
         <thead>
           <tr>
@@ -88,7 +104,7 @@ function PendingList() {
             <tr>
               <td>{item.id}</td>
               <td>
-                <img src={"http://127.0.0.1:8000"+item.profile_pic} height="50px" style={{borderRadius: '50%'}} alt="profile" width="50px" />
+                <img src={"https://emp-api.jassy.in"+item.profile_pic} height="50px" style={{borderRadius: '50%'}} alt="profile" width="50px" />
               </td>
               <td>{item.name}</td>
               <td>{item.age}</td>
@@ -189,7 +205,9 @@ function PendingList() {
           </tbody>
         ))}
       </table>
+      }
     </>
   );
 }
+
 export default PendingList;

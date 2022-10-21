@@ -8,13 +8,7 @@ import Swal from "sweetalert2";
 let id 
 
 function Update (props) {
-    // Fetch Data from django api
-    useEffect(() => {
-        Axios.get("http://127.0.0.1:8000/employee/"+id).then((response) =>
-          setData(response.data)
-        );
-      }
-      , []);
+    
 
     const [data, setData] = useState([]);
     const [name, setName] = useState(data.name);
@@ -24,8 +18,18 @@ function Update (props) {
     const [is_approved, setIs_approved] = useState(data.is_approved);
     const [is_rejected, setIs_rejected] = useState(data.is_rejected);
 
+    // Fetch Data from django api
+    useEffect(() => {
+        console.log("this is id", id);
+
+        Axios.get("https://emp-api.jassy.in/employee/"+id).then((response) =>
+          setData(response.data)
+        );
+      }
+      , []);
+
     const currentURL = window.location.href
-    id = currentURL
+    id = currentURL.split("/")[4]
 
     // Update Employee
     const updateEmployee = (id) => {
@@ -38,7 +42,7 @@ function Update (props) {
             });
         } 
         else {
-        Axios.put("http://127.0.0.1:8000/employee/"+id, {
+        Axios.put("https://emp-api.jassy.in/employee/"+id, {
             name: name,
             age: age,
             email: email,

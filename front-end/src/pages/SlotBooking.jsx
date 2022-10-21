@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
-import Update from "../components/Update";
+import Loderfun from "../components/Loader";
 
 
 
@@ -31,6 +31,9 @@ function SlotBooking() {
   const [booked_by, setBooked_by] = useState("");
   const [user_mail, setUser_mail] = useState("");
   const navigate = useNavigate();
+
+  // use state for loader 
+  const [loader, setLoader] = useState(false);
 
   const [modal, setModal] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -49,6 +52,7 @@ function SlotBooking() {
 
      // check if user is logined in
      const checkLogin = () => {
+      setLoader(true);
       const token = localStorage.getItem("token");
       const admin = localStorage.getItem("admin");
       console.log(token);
@@ -60,18 +64,33 @@ function SlotBooking() {
   useEffect(() => {
     checkLogin( )
     // fetch slots from the backend
-    axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
+    axios.get(`https://emp-api.jassy.in/allSlotList/`).then((res) => {
+      
       const slots = res.data;
       setSlots(slots);
-      console.log(slots);
+      setLoader(false);
     });
+
+
     // fetch approved approved employees from the backend
-    axios.get(`http://127.0.0.1:8000`).then((res) => {
+    axios.get(`https://emp-api.jassy.in/`).then((res) => {
       const approvedEmployees = res.data;
       setApprovedEmployees(approvedEmployees);
-      console.log(approvedEmployees);
+    }).then(() => {
+      console.log("emp loader");
+      setLoader(false);
     });
-  }, []);
+
+  }, [])  
+
+  // function to refresh the data after a booking or a cancel
+  const refreshData = () => {
+    // update the list of slots by updating the state from the backend
+    axios.get(`https://emp-api.jassy.in/allSlotList/`).then((res) => {
+      const slots = res.data;
+      setSlots(slots);
+    });
+  };
 
 
   // Slot clean up
@@ -89,7 +108,7 @@ function SlotBooking() {
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.post(`http://127.0.0.1:8000/slotCleanUp/`, {
+        axios.post(`https://emp-api.jassy.in/slotCleanUp/`, {
           id: id,
           slot_row: row,
           slot_number: number,
@@ -99,10 +118,7 @@ function SlotBooking() {
         Swal.fire("Deleted!", "Your Slot has been deleted.", "success"
         ).then(() => {
           // refresh the slots by updateing the state
-          axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
-            const slots = res.data;
-            setSlots(slots);
-          });
+          refreshData();
           navigate("/slotBooking");
         }
         );
@@ -138,32 +154,22 @@ function SlotBooking() {
         // using put method to update the slot status
         console.log(slot_row, slot_number, booked_by, user_mail);
         // put method to update the slot status
-        axios.post("http://127.0.0.1:8000/slotBooking/", {
+        axios.post("https://emp-api.jassy.in/slotBooking/", {
             slot_row: slot_row,
             slot_number: slot_number,
             booked_by: booked_by,
             user_mail: user_mail,
         });
-
-        Swal.fire("Booked!", "", "success");
-
+        refreshData();
+        Swal.fire("Booked!", "", "success").then(() => {
+          // refresh the slots by updateing the state
+          refreshData();
         // autoclose the modal that opned by seting modal state flase
-        closemodal();
-        
-        // update the list of slots by updating the state from the backend
-        axios.get(`http://127.0.0.1:8000/allSlotList/`).then((res) => {
-            const slots = res.data;
-            setSlots(slots);
-          });
+          closemodal();
           navigate("/slotBooking");
+        }
+        );
         
-        
-
-        // refresh the page after 2 seconds
-        setTimeout(function () {
-            // then navigate
-            navigate("/slotBooking");
-            }, 2000);
     }
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire("Cancelled", "", "error");
@@ -178,9 +184,16 @@ function SlotBooking() {
       <Container>
         <Row>
           <Col>
-            <h1>Slot Booking</h1>
+            <h1 className="text-center text-danger p-4">Slot Booking</h1>
           </Col>
         </Row>
+
+        {/* loader here if Loder state is true*/}
+      {loader ? 
+      <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '50vh'}}>
+      <Loderfun />
+      </div> : 
+
         <Row>
           <Col>
             <Table>
@@ -211,7 +224,21 @@ function SlotBooking() {
                     {/* show slot.booked_by else show not booked in green badge */}
                     <td>
                       {slot.booked_by ? (
-                        <span style={{fontSize: "15px"}}><b>{slot.booked_by}</b></span>
+                        <span style={{fontSize: "15px"}}>
+                          {/* display profile picture by checking approvedEmployees by filtering with slot.user_mail */}
+                          <div className="row">
+                            <div className="col-2">
+                          {approvedEmployees.filter((employee) => employee.email === slot.user_mail)
+                            .map((employee) => (
+                              <img src={"https://emp-api.jassy.in"+employee.profile_pic} alt="profile" style={{width: "50px", height: "50px", borderRadius: "50%"}} />
+                            ))}
+                            </div>
+                            <div className="col-10">
+                          <b>{slot.booked_by}</b><br/>
+                          {slot.user_mail}
+                          </div>
+                          </div>
+                        </span>
                       ) : (
                         <span style={{fontSize: "15px"}} class="badge bg-success">Not Booked</span>
                       )}
@@ -252,6 +279,7 @@ function SlotBooking() {
             </Table>
           </Col>
         </Row>
+} 
       </Container>
       <Modal  isOpen={modal} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Book Slot</ModalHeader>
@@ -273,7 +301,7 @@ function SlotBooking() {
                         }>
                             {/* list employee name  */}
                             <span className="row">
-                            <img className="col-4" style={{borderRadius: '20%'}} src={'http://127.0.0.1:8000'+ approvedEmployee.profile_pic} height="50px" alt="dp not found"/>
+                            <img className="col-4" style={{borderRadius: '20%'}} src={'https://emp-api.jassy.in'+ approvedEmployee.profile_pic} height="50px" alt="dp not found"/>
                             <div className="col-6">
                             
                               <b>{approvedEmployee.name} ( {approvedEmployee.age} )</b>

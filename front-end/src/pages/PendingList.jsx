@@ -3,12 +3,16 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import Loderfun from "../components/Loader";
 
 
 
 
 function PendingList () {
     const [data, setData] = useState([]);
+
+    // use state for loader 
+    const [loader, setLoader] = useState(false);
 
     // check if user is logined in
     const checkLogin = () => {
@@ -18,7 +22,7 @@ function PendingList () {
         }
         // check the token is valid or not
         else {
-            Axios.post("http://127.0.0.1:8000/UserLogin/", {
+            Axios.post("https://emp-api.jassy.in/UserLogin/", {
                 token: token,
             }).then((response) => {
                 if (response.data.message) {
@@ -35,15 +39,18 @@ function PendingList () {
 
     // Fetch Data from django api
     useEffect(() => {
+        setLoader(true);
       checkLogin( )
-      Axios.get("http://127.0.0.1:8000/pending/").then((response) =>
+      Axios.get("https://emp-api.jassy.in/pending/").then((response) =>
         setData(response.data)
-      );
+      ).then(() => {
+        setLoader(false);
+        });
     }, []);
 
     //Giving approval for an employee
     const approveEmployee = (id) => {
-     Axios.post("http://127.0.0.1:8000/approveEmployee/",{
+     Axios.post("https://emp-api.jassy.in/approveEmployee/",{
          id: id,
      });
      Swal.fire("Approved!", "", "success");
@@ -53,7 +60,7 @@ function PendingList () {
 
     // Reject employee
     const rejectEmployee = (id) => {
-        Axios.post("http://127.0.0.1:8000/rejectEmployee/",{
+        Axios.post("https://emp-api.jassy.in/rejectEmployee/",{
             id: id,
         });
         Swal.fire("Rejected!", "", "success");
@@ -79,7 +86,7 @@ function PendingList () {
             reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
-                Axios.delete("http://127.0.0.1:8000/employee/delete/"+id);
+                Axios.delete("https://emp-api.jassy.in/employee/delete/"+id);
 
                 // if post request is successfull update setData
                 setData(data.filter((item) => item.id !== id));
@@ -94,10 +101,16 @@ function PendingList () {
     return(
         <>
          <h1 className="text-center text-danger p-4">Pending Employee List</h1>
+         {/* loader here if Loder state is true*/}
+      {loader ? 
+      <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '50vh'}}>
+      <Loderfun />
+      </div> :
          <table className="table table-bordered ">
             <thead>
                 <tr >
                     <th style={{ fontWeight: 'bolder' }}>Sl no</th>
+                    <th style={{ fontWeight: 'bolder' }}>Profile DP</th>
                     <th style={{ fontWeight: 'bolder' }}>Name</th>
                     <th style={{ fontWeight: 'bolder' }}>Age</th>
                     <th style={{ fontWeight: 'bolder' }}>Email</th>
@@ -113,6 +126,7 @@ function PendingList () {
                 
                 <tr>
                     <td>{item.id}</td>
+                    <td><img src={"https://emp-api.jassy.in"+item.profile_pic} alt="profile pic" style={{width: "50px", height: "50px", borderRadius: "50%"}}/></td>
                     <td>{item.name}</td>
                     <td>{item.age}</td>
                     <td>{item.email}</td>
@@ -146,6 +160,7 @@ function PendingList () {
             </tbody>
             ))}
         </table>
+        }
         </>
 
     );

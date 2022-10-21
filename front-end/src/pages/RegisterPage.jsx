@@ -12,7 +12,7 @@ function RegisterPage() {
     const navigate = useNavigate();
     
     const register = () => {
-        Axios.post("http://127.0.0.1:8000/UserRegister/", {
+        Axios.post("https://emp-api.jassy.in/UserRegister/", {
             username: username,
             email: email,
             password: password,

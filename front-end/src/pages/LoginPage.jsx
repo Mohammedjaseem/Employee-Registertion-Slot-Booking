@@ -13,7 +13,7 @@ function LoginPage() {
     const navigate = useNavigate();
 
     const login = () => {
-        Axios.post("http://127.0.0.1:8000/UserLogin/", {
+        Axios.post("https://emp-api.jassy.in/UserLogin/", {
             email: email,
             password: password,
         }).then((response) => {
@@ -47,10 +47,10 @@ function LoginPage() {
         console.log('this is error',error);
         // if confirmButton is clicked then navigate to login page
         Swal.fire({
-            title: "Error",
-            text: error,
-            icon: "error",
-            confirmButtonText: "Ok",
+            title: "Account not found",
+            text: error.response.data.detail,
+            icon: "warning",
+            confirmButtonText: "Retry",
         }).then((result) => {
             if (result.isConfirmed) {
                 navigate('/login')
