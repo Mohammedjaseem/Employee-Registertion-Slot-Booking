@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Loderfun from "../components/Loader";
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 
 export default function PersonalProfile() {
@@ -15,6 +16,9 @@ export default function PersonalProfile() {
   const [slot_row, setSlotRow] = useState("");
   const [slot_number, setSlotNumber ] = useState("");
   const navigate = useNavigate();
+
+  // use state for loader 
+  const [loader, setLoader] = useState(false);
 
   // modal settings
   const [show, setShow] = useState(false);
@@ -56,6 +60,7 @@ export default function PersonalProfile() {
   // function to fetch user details
   function fetchUserDetails ()  {
     // works only if user is logged in
+    setLoader(true);
     checkLogin();
     const  email  = localStorage.getItem("email_for_fetch_details");
     axios.get("https://emp-api.jassy.in/user/", {
@@ -65,6 +70,7 @@ export default function PersonalProfile() {
     })
       .then((response) => {
         setUser(response.data);
+        setLoader(false);
       })
       .catch((error) => {
         console.log(error);
@@ -171,7 +177,11 @@ export default function PersonalProfile() {
   return (
    
 
-
+    <div className="home-page">
+    {loader ? 
+      <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '50vh'}}>
+      <Loderfun />
+      </div> : 
 
     <section className="vh-50" style={{ backgroundColor: '#f4f5f7' }}>
       <MDBContainer className="py-5 h-50">
@@ -349,7 +359,8 @@ export default function PersonalProfile() {
         </Modal.Footer>
       </Modal>
     </section>
-    
+    }
+    </div>
 
   );
 }

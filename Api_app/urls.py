@@ -38,5 +38,7 @@ urlpatterns = [
     path('rejectEmployee/', views.rejectEmployee),
     # get all employee list
     path('allEmployeeList/', views.allEmployees),
+    # new slot add
+    path('addNewSlot/', views.addSlot),
     
 ] 

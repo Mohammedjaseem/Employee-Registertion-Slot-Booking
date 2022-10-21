@@ -4,20 +4,25 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
+import Loderfun from "../components/Loader";
 
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [email_for_fetch_details, setEmailForFeatchDetails] = useState("");
 
+    // use state for loader 
+    const [loader, setLoader] = useState(false);
+
     const navigate = useNavigate();
 
     const login = () => {
+        setLoader(true);
         Axios.post("https://emp-api.jassy.in/UserLogin/", {
             email: email,
             password: password,
         }).then((response) => {
-            console.log(response);
+            setLoader(false);
             if (response.data.message) {
                 Swal.fire({
                     title: "Error",
@@ -44,6 +49,7 @@ function LoginPage() {
             }
         })
         .catch((error) => {
+            setLoader(false);
         console.log('this is error',error);
         // if confirmButton is clicked then navigate to login page
         Swal.fire({
@@ -67,6 +73,11 @@ function LoginPage() {
                         <div className="card-header">
                             <h3 className="text-center">User Login</h3>
                         </div>
+                        {/* loader here if Loder state is true*/}
+                        {loader ? 
+                        <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '50vh'}}>
+                        <Loderfun />
+                        </div> : 
                         <div className="card-body">
                             <div className="form-group">
                                 <label>Email</label>
@@ -109,6 +120,7 @@ function LoginPage() {
 
                             </div>
                         </div>
+                        }
                     </div>
                 </div>
             </div>

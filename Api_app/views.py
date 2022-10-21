@@ -377,6 +377,21 @@ def allEmployees(request):
     else:
         return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
+# add new slot
+@api_view(['POST'])
+def addSlot(request):
+    if request.method == 'POST':
+        slot_rows = request.data.get('slot_row')
+        slot_numbers = request.data.get('slot_number')
+        if slot_rows and slot_numbers:
+            slot = Slot.objects.filter(slot_row=slot_rows, slot_number=slot_numbers).first()
+            if slot:
+                return Response({'error': 'Slot already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            slot = Slot(slot_row=slot_rows, slot_number=slot_numbers)
+            slot.save()
+            return Response({'success': 'Slot Added'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Please provide slot row and slot number'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
         
