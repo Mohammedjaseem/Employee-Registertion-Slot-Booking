@@ -64,6 +64,7 @@ function SlotBooking() {
     }
   };
 
+
   useEffect(() => {
     checkLogin();
     // fetch slots from the backend
@@ -94,6 +95,8 @@ function SlotBooking() {
     axios.get(`https://emp-api.jassy.in/allSlotList/`).then((res) => {
       const slots = res.data;
       setSlots(slots);
+      // set new latest slot
+      setLatestslot(slots[slots.length - 1]);
     });
   };
 
@@ -180,12 +183,14 @@ function SlotBooking() {
   const addSlot = () => {
     // post method to add new slot
     console.log(slot_row, slot_number);
-    axios.post("http://127.0.0.1:8000/addNewSlot/", {
+    axios.post("https://emp-api.jassy.in/addNewSlot/", {
         slot_row: slot_row,
         slot_number: slot_number,
     }).then(() => {
+      
       // refresh the slots by updateing the state
       refreshData();
+      
       // autoclose the modal that opned by seting modal state flase
       closemodal2();
       // swal popup to show the success
@@ -379,11 +384,15 @@ function SlotBooking() {
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Book Slot</ModalHeader>
         <ModalBody>
+          <div className="row">
+            <div className="col-8">
           <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle caret>{slotLock}</DropdownToggle>
 
             <DropdownMenu>
+            <div style={{maxHeight: "400px", overflowY: "scroll"}}>
               {approvedEmployees.map((approvedEmployee) => (
+                
                 <DropdownItem
                   onClick={() => {
                     setBooked_by(approvedEmployee.name);
@@ -392,10 +401,11 @@ function SlotBooking() {
                   }}
                 >
                   {/* list employee name  */}
+                  
                   <span className="row">
                     <img
                       className="col-4"
-                      style={{ borderRadius: "20%" }}
+                      style={{ borderRadius: "50%", width: "80px", height: "60px" }}
                       src={
                         "https://emp-api.jassy.in" +
                         approvedEmployee.profile_pic
@@ -414,10 +424,20 @@ function SlotBooking() {
                       </p>
                     </div>
                   </span>
+                  
                 </DropdownItem>
               ))}
+              </div>
             </DropdownMenu>
+            
           </Dropdown>
+          </div>
+          <div className="mt-4">
+            <p>You selected<br/><b> {slotLock}</b> 
+
+            <br/>{user_mail}</p>
+            </div>
+          </div>
         </ModalBody>
         <ModalFooter>
           {/* on book button click put the status to api */}

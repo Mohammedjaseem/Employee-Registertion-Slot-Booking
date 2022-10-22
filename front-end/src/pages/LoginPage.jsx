@@ -41,6 +41,9 @@ function LoginPage() {
                         // set a token in local storage
                         localStorage.setItem("token", response.data.refresh);
                         localStorage.setItem("email_for_fetch_details", email);
+                        // test jwt
+                        localStorage.setItem("refresh_token", response.data.refresh);
+                        localStorage.setItem("access_token", response.data.access);
                         // navigate to homepage if user is logined with user email as a parameter
                         
                         navigate('/')

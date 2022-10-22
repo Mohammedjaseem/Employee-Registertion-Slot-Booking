@@ -12,7 +12,7 @@ function PendingList() {
   const navigate = useNavigate();
 
   // useState for Search employee
-  const [search, setSearch] = useState("");
+  const [q, setQ] = useState("");
 
   // use state for loader
   const [loader, setLoader] = useState(false);
@@ -29,16 +29,33 @@ function PendingList() {
   // filter employee with state search
   const searchEmployee = () => {
     setLoader(true);
-    // drop search if search have only one character
-    // filter employee with state search and set data with out calling api
-    const filterData = data.filter((item) => {
-      return item.name.toLowerCase().includes(search.toLowerCase());      
-    });
-    setData(filterData);
-    setLoader(false);
-
-    
+    // if search is empty then show all employee
+    if (q === "") {
+      Axios.get("https://emp-api.jassy.in/allEmployeeList/")
+      .then((response) => setData(response.data))
+    } 
+    // search employee with name or email within the frontend its
+    Axios.get('http://127.0.0.1:8000/searchEmployee/', {
+      params: {
+        search: q,
+      },
+    })
+    // update state data with response data
+      .then((response) => {
+        setData(response.data);
+        // refresh page data
+        setLoader(false);  
+        // if no employee found
+        if (response.data.length === 0) {
+          setLoader(false); 
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.log(error);
+      });
   };
+
 
   // Fetch Data from django api
   useEffect(() => {
@@ -98,12 +115,11 @@ function PendingList() {
                 placeholder="Search by employee name"
                 aria-label="Recipient's username"
                 aria-describedby="button-addon2"
-                defaultValue={""}
+                value={q}
                 // on change set state search and call searchEmployee function
-                onKeyDown={(e) => {
-                  setSearch(e.target.value)
-                  searchEmployee(e.target.value)
-                  console.log(e.target.value)
+                onChange={(e) => {
+                  setQ(e.target.value)
+                  searchEmployee()
                 }}
                 // display search keyword 
                 // value={search}

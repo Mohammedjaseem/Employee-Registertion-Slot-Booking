@@ -5,6 +5,7 @@ import Axios from "axios";
 import Swal from "sweetalert2";
 import Loderfun from "../components/Loader";
 
+
 function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

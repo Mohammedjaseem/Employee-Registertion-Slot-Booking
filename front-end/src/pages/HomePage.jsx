@@ -34,14 +34,38 @@ export default function PersonalProfile() {
   const [designation, setDesignation] = useState("");
   const [profile_pic, setProfile_pic] = useState(null);
 
+   // validate the token and set new refresh token 
+   function validateToken() {
+    axios.post("https://emp-api.jassy.in/token/refresh/", {
+      refresh: localStorage.getItem("refresh_token")
+
+    }).then((response) => {
+      localStorage.setItem("token", response.data.refresh);
+      localStorage.setItem("refresh_token", response.data.refresh);
+      localStorage.setItem("access_token", response.data.access);
+      console.log("token refreshed........................!!!!!!!!!!!!!!!!!!!!!!!!!");
+      // if response data code === "token_not_valid" then redirect to login page
+      if (response.data.code === "token_not_valid") {
+        navigate("/login");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
 
   // function to check if user is logged in basked on token in local storage token
   function checkLogin() {
+    validateToken();
     if (localStorage.getItem("token") === null) {
       // navigate('/login') // this is work but shows the swal pop of profile not updated hence i used the below code
       window.location.href = "/login";
     }
   }
+
+ 
+
 
   // check if the user has any allowed slot by checking the slot api
   function checkSlot() {

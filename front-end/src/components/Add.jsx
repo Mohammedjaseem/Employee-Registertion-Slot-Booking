@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import Axios from "axios";
+import Loderfun from "../components/Loader";
 
 function Add() {
   const [name, setName] = useState("");
@@ -15,6 +16,9 @@ function Add() {
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Choose File");
   const [uploadedFile, setUploadedFile] = useState({});
+
+  // use state for loader
+  const [loader, setLoader] = useState(false);
 
   // on file upload show file name
   const onChangeFileUpload = (e) => {
@@ -40,6 +44,7 @@ function Add() {
 
   // Submit Form
   const submitForm = async (e) => {
+    setLoader(true);
     e.preventDefault();
 
     const formData = new FormData();
@@ -59,7 +64,7 @@ function Add() {
       const { fileName, filePath } = res.data;
 
       setUploadedFile({ fileName, filePath });
-
+      setLoader(false);  
       Swal.fire({
         title: "Success",
         text: "Employee Added Successfully",
@@ -72,7 +77,15 @@ function Add() {
       }, 2000);
       
     } catch (err) {
+      setLoader(false);  
       if (err.response.status === 500) {
+        // swal alert 
+        Swal.fire({
+          title: "Error",
+          text: "There was a problem with the server",
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
         console.log("There was a problem with the server");
       } else {
         console.log(err.response.data.msg);
@@ -83,6 +96,19 @@ function Add() {
   return (
     <>
       <h1 className="text-center text-danger p-4">Register Employee</h1>
+      {/* loader here if Loder state is true*/}
+      {loader ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <Loderfun />
+        </div>
+      ) : (
       <table className="table table-bordered">
         <tbody>
           <tr>
@@ -162,6 +188,7 @@ function Add() {
           </tr>
         </tbody>
       </table>
+      )}
     </>
   );
 }

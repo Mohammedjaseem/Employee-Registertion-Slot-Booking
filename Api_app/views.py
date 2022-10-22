@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.db.models import Q
 from rest_framework import status
 from. models import Employee, Account, Slot, ImgUpload
 from. serializers import EmployeeSerializer, UserRegisterSerializer, availableSlotsSerializer, imgUploadSerializer
@@ -18,6 +19,29 @@ import jwt
 
 
 # Create your views here.
+
+# user login view
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        token['email'] = user.email
+        return(token)
+    
+    
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
+# class TokenRefreshView(TokenRefreshView):
+#     serializer_class = MyTokenObtainPairSerializer
+
+
+# token verify view
 
 
 class employeeList(APIView):
@@ -112,28 +136,7 @@ class UserRegisterView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# user login view
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
 
-        # Add custom claims
-        token['username'] = user.username
-        token['email'] = user.email
-        return(token)
-    
-    
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
-
-
-# class TokenRefreshView(TokenRefreshView):
-#     serializer_class = MyTokenObtainPairSerializer
-
-
-# token verify view
 
         
 
@@ -392,6 +395,17 @@ def addSlot(request):
             return Response({'success': 'Slot Added'}, status=status.HTTP_200_OK)
         return Response({'error': 'Please provide slot row and slot number'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+# Search employee by name or email # Error in this function
+@api_view(['GET'])
+def searchEmployee(request):
+    if request.method == 'GET':
+        search = request.query_params.get('search')
+        if search:
+            employees = Employee.objects.filter(Q(name__icontains=search) | Q(email__icontains=search))
+            serializer = EmployeeSerializer(employees, many=True)
+            return Response (serializer.data)
+        return Response({'error': 'Please provide search query'}, status=status.HTTP_400_BAD_REQUEST)
 
 
         
