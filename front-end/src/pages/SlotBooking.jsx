@@ -37,6 +37,7 @@ function SlotBooking() {
   const [approvedEmployees, setApprovedEmployees] = useState([]);
 
   // MODAL of booking slot
+  const [selectedUserDp, setSelectedUserDp] = useState("");
   const [modal, setModal] = useState(false);
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const toggleModal = () => setModal(!modal);
@@ -434,7 +435,7 @@ function SlotBooking() {
           </div>
           <div className="mt-4">
             <p>You selected<br/><b> {slotLock}</b> 
-
+            
             <br/>{user_mail}</p>
             </div>
           </div>
