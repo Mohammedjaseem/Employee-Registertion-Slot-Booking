@@ -105,7 +105,7 @@ function PendingList() {
     <>
       <h1 className="text-center text-danger p-4">All Employes</h1>
       {/* Search box onchange*/}
-      <div className="container">
+      {/* <div className="container">
         <div className="row  justify-content-center">
           <div className="col-md-4" style={{ textAlign: "center" }}>
             <div className="input-group mb-3">
@@ -127,7 +127,7 @@ function PendingList() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* Search box ends here */}
       {/* loader here if Loder state is true*/}
       {loader ? (
