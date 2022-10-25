@@ -18,7 +18,9 @@ Admin Side:  [emp.jassy.in/admin](https://emp.jassy.in/admin)
  
  
  
- Screenshots Clinet Side :
+            Screenshots Clinet Side :
+            
+            
  
  ![image](https://user-images.githubusercontent.com/56159302/197694546-17c6046d-89eb-4a7c-a349-5a88626d9331.png)
  
@@ -36,7 +38,12 @@ Admin Side:  [emp.jassy.in/admin](https://emp.jassy.in/admin)
 
 
 
-Admin Side :
+
+
+      Admin Side :
+
+
+
 
 ![image](https://user-images.githubusercontent.com/56159302/197695040-cc271bfe-c751-4250-90e2-53359f4467f2.png)
 
