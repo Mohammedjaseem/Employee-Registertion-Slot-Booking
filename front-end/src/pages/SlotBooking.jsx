@@ -246,7 +246,7 @@ function SlotBooking() {
         ) : (
           <Row>
             <Col>
-              <Table>
+              <Table className="mb-5">
                 <thead>
                   <tr>
                     <th style={{ fontSize: "15px", fontWeight: "bolder" }}>

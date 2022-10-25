@@ -106,7 +106,7 @@ function PendingList () {
       <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '50vh'}}>
       <Loderfun />
       </div> :
-         <table className="table table-bordered ">
+         <table className="table table-bordered mb-5">
             <thead>
                 <tr >
                     <th style={{ fontWeight: 'bolder' }}>Sl no</th>

@@ -20,14 +20,15 @@ import SlotBooking from './pages/SlotBooking';
 import AdminLogin from './pages/AdminLogin';
 import Sidebar from './pages/Sidebar';
 import AddDp from './pages/dpAdd';
+import Footer from './components/Footer';
 
 
 
 function App() {
   return (
-    <div className='container'>
-      <NavbarBootstrap />
-      
+    <>
+    <NavbarBootstrap />
+    <div className='container'> 
       <Routes>
         {/* private route for home page */}
         {/* <PrivateRoute element={<HomePage />} /> */}
@@ -47,7 +48,11 @@ function App() {
         <Route path='/AddDp' element={<AddDp />} />
         <Route path='*' element={<h1>404 Not Found</h1>} />
       </Routes>
+
+      
     </div>
+    <Footer />
+    </>
   );
 }
 

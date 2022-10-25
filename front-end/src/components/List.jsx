@@ -96,7 +96,7 @@ function List() {
       <Loderfun />
       </div> :
       // if loader is false then show table
-      <table className="table table-bordered ">
+      <table className="table table-bordered mb-5">
         <thead>
           <tr>
             <th style={{ fontWeight: "bolder" }}>Sl no</th>
