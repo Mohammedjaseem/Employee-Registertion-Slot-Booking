@@ -37,7 +37,6 @@ function NavbarBootstrap() {
 
 
 
-
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className='rounded mb-3'>
       <Container >
@@ -72,8 +71,6 @@ function NavbarBootstrap() {
             <Link className='nav-link' to="/PendingList">Pending</Link>,
             <Link className='nav-link' to="/RejctedList">Rejected </Link>,
             <Link className='nav-link' to="/add"> Register Employee  </Link> */}
-  
-
            
             {/* check if logined user is admin */}
             {localStorage.getItem('admin') ? (

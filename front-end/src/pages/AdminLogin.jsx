@@ -3,7 +3,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import Loderfun from "../components/Loader";
@@ -74,7 +74,7 @@ function AdminLogin() {
             <div className="card-header">
               <h3 className="text-center">Admin Login</h3>
             </div>
-            {/* loader here if Loder state is true*/}
+            {/* loader here if Loder state is true*/} 
       {loader ? (
         <div
           style={{
@@ -119,6 +119,9 @@ function AdminLogin() {
                   <br></br>
                   <Link to="/login">User Login</Link>
                 </p>
+               
+                  For Admin login : Check my github repo <a href="https://github.com/Mohammedjaseem/Employee-Registertion-Slot-Booking"><i class="bi bi-github"></i>GitHub Profile</a>
+
               </div>
             </div>
             )}

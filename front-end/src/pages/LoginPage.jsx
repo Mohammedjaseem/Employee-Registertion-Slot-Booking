@@ -120,6 +120,11 @@ function LoginPage() {
                                     <Link to="/register">Register New User</Link><br/>
                                     <Link to="/admin">Admin Login</Link>
                                 </p>
+                                <br/>
+                                For Testing you can create a new user 
+                                <br/>
+                                Admin login : Check my github repo <a href="https://github.com/Mohammedjaseem/Employee-Registertion-Slot-Booking">Click Here</a>
+                                
 
                             </div>
                         </div>
